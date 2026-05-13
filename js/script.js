@@ -385,10 +385,14 @@
                 if (data.path) {
                     setPreviewImg(data.path + '?t=' + Date.now());
                 } else {
+                    alert('图片上传失败：' + (data.error || '未知错误') + '\n将使用本地预览，图片不会保存到服务器。');
                     fallbackBase64(file);
                 }
             })
-            .catch(function () { fallbackBase64(file); });
+            .catch(function (err) {
+                alert('upload.php 无法访问：' + err + '\n请确认文件已上传到服务器。');
+                fallbackBase64(file);
+            });
     }
 
     if (imgInput) imgInput.addEventListener('change', function () {
