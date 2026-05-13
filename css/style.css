@@ -1,40 +1,32 @@
 /* ============================================================
    湮灭之书 · ESO 攻略笔记
-   深色奇幻主题 / 金羊皮配色
    ============================================================ */
 
 :root {
-    --bg-0: #0b0d12;
-    --bg-1: #11141c;
-    --bg-2: #181c27;
-    --bg-3: #20253420;
-    --line: #2a3142;
-    --text: #e6e1cf;
-    --text-dim: #aea58b;
-    --text-mute: #76705a;
+    --bg-0: #1e1a13;
+    --bg-1: #28231a;
+    --bg-2: #322c20;
+    --bg-3: #3c352540;
+    --line: #5a4e38;
+    --text: #f0eadb;
+    --text-dim: #cec4a6;
+    --text-mute: #9e9070;
 
     --gold: #d4a857;
     --gold-2: #f5d27a;
-    --gold-soft: #d4a85730;
+    --gold-soft: #d4a85740;
 
     --red: #c8553d;
-    --green: #6aa97a;
-    --blue: #6aa3d4;
-    --purple: #a78bd2;
     --yellow: #e6c25b;
+    --purple: #a78bd2;
 
     --radius: 14px;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.6);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     margin: 0;
@@ -42,9 +34,9 @@ body {
     color: var(--text);
     background: var(--bg-0);
     background-image:
-        radial-gradient(1200px 600px at 80% -10%, #2a1f10 0%, transparent 60%),
-        radial-gradient(900px 500px at 0% 30%, #122030 0%, transparent 70%),
-        linear-gradient(180deg, #0b0d12 0%, #0a0c11 100%);
+        radial-gradient(1200px 600px at 80% -10%, #3d2e18 0%, transparent 60%),
+        radial-gradient(900px 500px at 0% 30%, #1e2d38 0%, transparent 70%),
+        linear-gradient(180deg, #1e1a13 0%, #1a1610 100%);
     background-attachment: fixed;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -72,7 +64,7 @@ h1, h2, h3, h4, h5 {
     align-items: center;
     justify-content: space-between;
     padding: 14px 32px;
-    background: rgba(11, 13, 18, 0.85);
+    background: rgba(30, 26, 19, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
@@ -128,127 +120,11 @@ h1, h2, h3, h4, h5 {
     cursor: pointer;
 }
 
-/* ========== 英雄区 ========== */
-.hero {
-    position: relative;
-    padding: 120px 32px 100px;
-    text-align: center;
-    overflow: hidden;
-}
-
-.hero-glow {
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(600px 400px at 50% 50%, rgba(212, 168, 87, 0.15) 0%, transparent 60%),
-        radial-gradient(800px 300px at 50% 100%, rgba(106, 163, 212, 0.08) 0%, transparent 70%);
-    pointer-events: none;
-}
-
-.hero-inner {
-    position: relative;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.hero-tag {
-    color: var(--gold);
-    font-size: 13px;
-    letter-spacing: .25em;
-    margin: 0 0 18px;
-    font-family: "Cinzel", serif;
-}
-
-.hero-title {
-    font-size: clamp(32px, 5vw, 56px);
-    font-weight: 900;
-    line-height: 1.25;
-    color: var(--text);
-    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-}
-.hero-title span {
-    background: linear-gradient(180deg, var(--gold-2) 0%, var(--gold) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.hero-sub {
-    margin: 24px auto 36px;
-    max-width: 640px;
-    color: var(--text-dim);
-    font-size: 16px;
-}
-
-.hero-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin: 0 auto 36px;
-    max-width: 720px;
-}
-.hero-stats > div {
-    background: var(--bg-2);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 18px 12px;
-}
-.hero-stats strong {
-    display: block;
-    font-family: "Cinzel", serif;
-    font-size: 26px;
-    color: var(--gold-2);
-}
-.hero-stats span {
-    display: block;
-    margin-top: 4px;
-    font-size: 12px;
-    color: var(--text-mute);
-}
-
-.hero-cta {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.btn {
-    display: inline-block;
-    padding: 12px 28px;
-    border-radius: 999px;
-    font-family: "Cinzel", "Noto Serif SC", serif;
-    font-weight: 700;
-    letter-spacing: .12em;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all .25s;
-    border: 1px solid transparent;
-}
-.btn-primary {
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-2) 100%);
-    color: #1a1408;
-    box-shadow: 0 8px 24px var(--gold-soft);
-}
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(212, 168, 87, 0.4);
-    color: #1a1408;
-}
-.btn-ghost {
-    border-color: var(--line);
-    color: var(--text-dim);
-}
-.btn-ghost:hover {
-    border-color: var(--gold);
-    color: var(--gold-2);
-}
-
 /* ========== 通用容器 / 区块 ========== */
 .container {
-    max-width: 1180px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 20px 32px 80px;
+    padding: 20px 40px 80px;
 }
 
 .card {
@@ -296,15 +172,50 @@ h1, h2, h3, h4, h5 {
     letter-spacing: .05em;
 }
 
+/* ========== 折叠 details ========== */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+details > summary.section-head {
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 0;
+}
+details[open] > summary.section-head {
+    margin-bottom: 28px;
+}
+details > summary.section-head:hover .collapse-arrow {
+    color: var(--gold);
+}
+.collapse-arrow {
+    margin-left: auto;
+    font-size: 20px;
+    color: var(--text-mute);
+    transition: transform .25s, color .2s;
+    flex-shrink: 0;
+}
+details[open] .collapse-arrow {
+    transform: rotate(180deg);
+}
+
 /* ========== 主线流程 ========== */
 .story-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    align-items: start;
+    grid-template-columns: 2fr 1fr;
+    gap: 36px;
+    align-items: stretch;
+}
+.story-image {
+    position: relative;
 }
 .story-image img {
+    position: absolute;
+    inset: 0;
     width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top;
     border-radius: 12px;
     border: 1px solid var(--line);
     cursor: zoom-in;
@@ -339,321 +250,12 @@ h1, h2, h3, h4, h5 {
     color: var(--text-dim);
     font-size: 14px;
 }
-.route-card ul {
-    padding-left: 18px;
-}
+.route-card ul { padding-left: 18px; }
 .route-card li { margin: 4px 0; }
 
-.c-red { color: var(--red); }
+.c-red    { color: var(--red); }
 .c-yellow { color: var(--yellow); }
 .c-purple { color: var(--purple); }
-.c-green { color: var(--green); }
-.c-blue { color: var(--blue); }
-
-/* ========== 构筑 ========== */
-.builds-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
-.build {
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all .25s;
-}
-.build:hover {
-    transform: translateY(-3px);
-    border-color: var(--gold);
-    box-shadow: var(--shadow-strong);
-}
-.build-img img {
-    width: 100%;
-    display: block;
-    cursor: zoom-in;
-    background: #000;
-}
-.build-info { padding: 22px 24px; }
-.build-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-.build-title h4 {
-    font-size: 22px;
-    color: var(--gold-2);
-}
-.tag {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-}
-.tag-tank { background: rgba(106, 163, 212, .15); color: var(--blue); }
-.tag-dps  { background: rgba(200, 85, 61, .15);  color: var(--red); }
-
-.build-meta {
-    color: var(--text-mute);
-    font-size: 13px;
-    margin: 0 0 16px;
-}
-.kv {
-    list-style: none;
-    margin: 0 0 16px;
-    padding: 0;
-    border-top: 1px dashed var(--line);
-}
-.kv li {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed var(--line);
-    font-size: 14px;
-}
-.kv span { color: var(--text-mute); }
-.kv strong { color: var(--text); font-weight: 500; }
-
-.build-stats {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.build-stats span {
-    background: var(--bg-2);
-    color: var(--gold-2);
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    border: 1px solid var(--line);
-}
-
-/* ========== 全图展示 ========== */
-.full-image img {
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    cursor: zoom-in;
-}
-.full-image figcaption {
-    text-align: center;
-    color: var(--text-mute);
-    font-size: 13px;
-    margin-top: 12px;
-}
-
-/* ========== 炼金 ========== */
-.alchemy-grid {
-    display: grid;
-    grid-template-columns: 380px 1fr;
-    gap: 30px;
-    align-items: start;
-}
-.alchemy-image img {
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    cursor: zoom-in;
-}
-.alchemy-info h4 {
-    font-size: 22px;
-    color: var(--gold-2);
-    margin-bottom: 6px;
-}
-.alchemy-info .meta {
-    color: var(--text-mute);
-    margin: 0 0 18px;
-    font-size: 13px;
-    letter-spacing: .05em;
-}
-.potion-effects {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 24px;
-}
-.potion-effects > div {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 14px;
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    font-size: 14px;
-}
-.potion-effects strong {
-    color: var(--gold-2);
-}
-.dot {
-    flex: 0 0 auto;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-top: 8px;
-    box-shadow: 0 0 8px currentColor;
-}
-.dot.c-red   { background: var(--red);   color: var(--red); }
-.dot.c-blue  { background: var(--blue);  color: var(--blue); }
-.dot.c-green { background: var(--green); color: var(--green); }
-
-.recipe h5 {
-    font-size: 14px;
-    color: var(--gold);
-    margin-bottom: 12px;
-    letter-spacing: .12em;
-}
-.recipe-items {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-}
-.ingredient {
-    background: var(--bg-2);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 13px;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.ingredient .ic { font-size: 18px; }
-
-/* ========== 日常 ========== */
-.daily-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-}
-.daily-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 22px;
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all .25s;
-}
-.daily-item:hover {
-    border-color: var(--gold);
-    transform: translateY(-2px);
-}
-.daily-item input[type="checkbox"] {
-    flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
-    accent-color: var(--gold);
-    cursor: pointer;
-}
-.daily-num {
-    font-family: "Cinzel", serif;
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--gold);
-    opacity: .35;
-}
-.daily-content {
-    display: flex;
-    flex-direction: column;
-}
-.daily-content strong {
-    color: var(--text);
-    font-size: 16px;
-}
-.daily-content em {
-    color: var(--text-mute);
-    font-size: 12px;
-    font-style: normal;
-    margin-top: 2px;
-}
-.daily-item input:checked ~ .daily-content strong {
-    text-decoration: line-through;
-    color: var(--text-mute);
-}
-.daily-tip {
-    margin: 18px 0 0;
-    color: var(--text-mute);
-    font-size: 12px;
-    text-align: center;
-}
-
-/* ========== 小贴士 ========== */
-.tips-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-.tip {
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 22px 24px;
-    position: relative;
-}
-.tip-tag {
-    position: absolute;
-    top: -10px;
-    left: 18px;
-    background: var(--gold);
-    color: #1a1408;
-    padding: 3px 12px;
-    font-size: 11px;
-    border-radius: 999px;
-    font-weight: 700;
-    letter-spacing: .12em;
-}
-.tip h4 {
-    font-size: 16px;
-    color: var(--gold-2);
-    margin: 6px 0 8px;
-}
-.tip p {
-    margin: 0;
-    color: var(--text-dim);
-    font-size: 14px;
-}
-
-/* ========== 资源 ========== */
-.links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-}
-.link-card {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 22px 20px;
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    color: var(--text);
-    transition: all .25s;
-}
-.link-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--gold);
-    background: var(--bg-2);
-    color: var(--gold-2);
-}
-.link-icon {
-    font-size: 28px;
-    margin-bottom: 6px;
-}
-.link-card strong {
-    font-size: 15px;
-}
-.link-card em {
-    font-style: normal;
-    color: var(--text-mute);
-    font-size: 12px;
-}
 
 /* ========== 页脚 ========== */
 .footer {
@@ -662,6 +264,40 @@ h1, h2, h3, h4, h5 {
     text-align: center;
     color: var(--text-mute);
     font-size: 13px;
+}
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+.footer-links a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 180px;
+    padding: 22px 16px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color .2s, transform .2s;
+}
+.footer-links a:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+.footer-links .fl-icon { font-size: 28px; }
+.footer-links strong {
+    color: var(--text);
+    font-size: 15px;
+}
+.footer-links em {
+    color: var(--text-mute);
+    font-size: 12px;
+    font-style: normal;
 }
 .footer .muted {
     margin-top: 4px;
@@ -716,22 +352,11 @@ h1, h2, h3, h4, h5 {
 
 /* ========== 响应式 ========== */
 @media (max-width: 960px) {
-    .story-grid, .builds-grid, .alchemy-grid {
-        grid-template-columns: 1fr;
-    }
-    .daily-grid, .tips-grid {
-        grid-template-columns: 1fr;
-    }
-    .hero-stats {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .story-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 760px) {
-    .topbar {
-        padding: 12px 18px;
-        flex-wrap: wrap;
-    }
+    .topbar { padding: 12px 18px; flex-wrap: wrap; }
     .nav {
         order: 3;
         width: 100%;
@@ -742,8 +367,6 @@ h1, h2, h3, h4, h5 {
     }
     .nav.open { display: flex; }
     .nav-toggle { display: grid; place-items: center; }
-
-    .hero { padding: 70px 18px 60px; }
     .container { padding: 12px 16px 60px; }
     .card { padding: 22px 18px; }
     .section-head { gap: 14px; }

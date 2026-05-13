@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>湮灭之书 · 我的上古卷轴OL攻略库</title>
+    <title>阿琛与伞 · 我的上古卷轴OL攻略库</title>
     <meta name="description" content="一位泰姆瑞尔旅人记录的上古卷轴OL（ESO）个人攻略笔记：主线流程、构筑、炼金、日常清单、交易工具等。">
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.loli.net/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -15,330 +15,85 @@
         <div class="brand">
             <span class="brand-mark">✦</span>
             <div class="brand-text">
-                <h1>湮灭之书</h1>
+                <h1>阿琛与伞</h1>
                 <p>The Elder Scrolls Online · 个人攻略笔记</p>
             </div>
         </div>
         <nav class="nav" id="nav">
             <a href="#story">主线</a>
-            <a href="#builds">构筑</a>
-            <a href="#skills">技能</a>
-            <a href="#alchemy">炼金</a>
-            <a href="#map">地图</a>
-            <a href="#daily">日常</a>
-            <a href="#tips">小贴士</a>
-            <a href="#links">资源</a>
         </nav>
         <button class="nav-toggle" id="navToggle" aria-label="切换菜单">☰</button>
     </header>
 
-    <!-- ===== 英雄区 ===== -->
-    <section class="hero">
-        <div class="hero-glow"></div>
-        <div class="hero-inner">
-            <p class="hero-tag">SUPERSTAR · 泰姆瑞尔旅人手札</p>
-            <h2 class="hero-title">愿你在<span>泰姆瑞尔</span>找到属于自己的传奇</h2>
-            <p class="hero-sub">这里记录我在 ESO 中走过的路线、玩过的构筑、做过的日常，以及偶尔淘到的小窍门。<br>持续更新，欢迎来串门。</p>
-            <div class="hero-stats">
-                <div><strong>2276</strong><span>勇士点（虎人 · 死灵法师）</span></div>
-                <div><strong>461</strong><span>勇士点（布莱顿 · 奥术师）</span></div>
-                <div><strong>6</strong><span>已记录配方</span></div>
-                <div><strong>∞</strong><span>未完待续</span></div>
-            </div>
-            <div class="hero-cta">
-                <a href="#story" class="btn btn-primary">从主线开始</a>
-                <a href="#daily" class="btn btn-ghost">查看每日清单</a>
-            </div>
-        </div>
-    </section>
 
     <main class="container">
 
         <!-- ===== 主线流程 ===== -->
         <section id="story" class="card section">
-            <header class="section-head">
-                <span class="section-num">01</span>
-                <div>
-                    <h3>游戏本体剧情流程</h3>
-                    <p>世界主线 · 三大阵营任选其一 · 公会剧情 · 最终 DLC 探索</p>
-                </div>
-            </header>
+            <details>
+                <summary class="section-head">
+                    <span class="section-num">01</span>
+                    <div>
+                        <h3>游戏本体剧情流程</h3>
+                        <p>世界主线 · 三大阵营任选其一 · 公会剧情 · 最终 DLC 探索</p>
+                    </div>
+                    <span class="collapse-arrow">▾</span>
+                </summary>
 
-            <div class="story-grid">
-                <figure class="story-image">
-                    <img src="img/storyline.png" alt="上古卷轴OL剧情流程图" loading="lazy" data-zoom>
-                    <figcaption>点击图片可放大查看完整流程</figcaption>
-                </figure>
+                <div class="story-grid">
+                    <figure class="story-image">
+                        <img src="img/storyline.png" alt="上古卷轴OL剧情流程图" loading="lazy" data-zoom>
+                        <figcaption>点击图片可放大查看完整流程</figcaption>
+                    </figure>
 
-                <div class="story-notes">
-                    <div class="route-card">
-                        <h4>① 新手起步</h4>
-                        <p>跟随《"冷港的丧魂傀儡"》新手教程进入避难所，触发系列剧情后回到城市继续推进。</p>
-                    </div>
-                    <div class="route-card">
-                        <h4>② 阵营三选一</h4>
-                        <ul>
-                            <li><strong class="c-red">七落联盟</strong>：斯特罗斯·迈凯 → 贝庭克 → 格林姆布拉 → 风暴港 → 班古莱</li>
-                            <li><strong class="c-yellow">先祖神洲</strong>：柯娜西之栖 → 奥瑞顿 → 格拉特森林 → 收割者之境</li>
-                            <li><strong class="c-purple">黑檀心公约</strong>：荒岩岛 → 巴尔弗延 → 石落 → 暗影沼泽 → 裂谷</li>
-                        </ul>
-                    </div>
-                    <div class="route-card">
-                        <h4>③ 停战会议 → 冷港</h4>
-                        <p>三阵营线汇合到"停战会议"，之后前往冷港探索，最终回避难所触发收尾剧情。</p>
-                    </div>
-                    <div class="route-card">
-                        <h4>④ 序章 → DLC</h4>
-                        <p>序章任务即各 DLC 预告。可按口味选择：魔神三部曲、艾斯维尔、灰色沼泽、黑木、高岛、死灵之地、黄金大道……</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 角色构筑 ===== -->
-        <section id="builds" class="card section">
-            <header class="section-head">
-                <span class="section-num">02</span>
-                <div>
-                    <h3>我的角色构筑</h3>
-                    <p>两位主力：肉盾死灵 & 双持奥术</p>
-                </div>
-            </header>
-
-            <div class="builds-grid">
-                <article class="build">
-                    <div class="build-img">
-                        <img src="img/build-arcanist.png" alt="MEOWPRPR 虎人死灵法师配装" loading="lazy" data-zoom>
-                    </div>
-                    <div class="build-info">
-                        <div class="build-title">
-                            <h4>MEOWPRPR</h4>
-                            <span class="tag tag-tank">坦克 / T</span>
+                    <div class="story-notes">
+                        <div class="route-card">
+                            <h4>① 新手起步</h4>
+                            <p>跟随《"冷港的丧魂傀儡"》新手教程进入避难所，触发系列剧情后回到城市继续推进。</p>
                         </div>
-                        <p class="build-meta">虎人 · 死灵法师 · 2276 勇士点 · 1级军士长</p>
-                        <ul class="kv">
-                            <li><span>头/肩</span><strong>天灾玛鲁贝斯（2/2）</strong></li>
-                            <li><span>胸/手/腰</span><strong>西罗帝尔饰章（5/5）</strong></li>
-                            <li><span>腿/足/戒指</span><strong>军营守卫者</strong></li>
-                            <li><span>颈链</span><strong>军营守卫者（套装 5/5）</strong></li>
-                            <li><span>武器</span><strong>军营守卫者匕首 + 盾</strong></li>
-                            <li><span>赐福</span><strong>淑女座</strong></li>
-                        </ul>
-                        <div class="build-stats">
-                            <span>生命 46808</span><span>耐力 15601</span><span>抗性 21588</span>
+                        <div class="route-card">
+                            <h4>② 阵营三选一</h4>
+                            <ul>
+                                <li><strong class="c-red">七落联盟</strong>：斯特罗斯·迈凯 → 贝庭克 → 格林姆布拉 → 风暴港 → 班古莱</li>
+                                <li><strong class="c-yellow">先祖神洲</strong>：柯娜西之栖 → 奥瑞顿 → 格拉特森林 → 收割者之境</li>
+                                <li><strong class="c-purple">黑檀心公约</strong>：荒岩岛 → 巴尔弗延 → 石落 → 暗影沼泽 → 裂谷</li>
+                            </ul>
                         </div>
-                    </div>
-                </article>
-
-                <article class="build">
-                    <div class="build-img">
-                        <img src="img/build-arcanist.png" alt="WINK-ACHEN 布莱顿奥术师配装" loading="lazy" data-zoom>
-                    </div>
-                    <div class="build-info">
-                        <div class="build-title">
-                            <h4>WINK-ACHEN</h4>
-                            <span class="tag tag-dps">输出 / DPS</span>
+                        <div class="route-card">
+                            <h4>③ 停战会议 → 冷港</h4>
+                            <p>三阵营线汇合到"停战会议"，之后前往冷港探索，最终回避难所触发收尾剧情。</p>
                         </div>
-                        <p class="build-meta">布莱顿 · 奥术师 · 461 勇士点 · 1级军团士兵</p>
-                        <ul class="kv">
-                            <li><span>头</span><strong>黏爪面具（1/2）</strong></li>
-                            <li><span>肩</span><strong>潮生者护肩（5/5）</strong></li>
-                            <li><span>胸/手/腰/腿/足</span><strong>完美空无之匣（5/5）</strong></li>
-                            <li><span>戒指</span><strong>潮生者戒指</strong></li>
-                            <li><span>颈链</span><strong>北地精灵乌尔法师护符（1/1）</strong></li>
-                            <li><span>武器</span><strong>潮生者匕首 + 漩涡完美巨剑</strong></li>
-                            <li><span>赐福</span><strong>盗贼座</strong></li>
-                        </ul>
-                        <div class="build-stats">
-                            <span>伤害 4865</span><span>暴击 44.5%</span><span>穿透 6857</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- ===== 技能 ===== -->
-        <section id="skills" class="card section">
-            <header class="section-head">
-                <span class="section-num">03</span>
-                <div>
-                    <h3>常用技能 / 套装符文</h3>
-                    <p>截取的技能 & 符文图鉴一览</p>
-                </div>
-            </header>
-            <figure class="full-image">
-                <img src="img/skills.png" alt="ESO 技能 / 符文图标" loading="lazy" data-zoom>
-                <figcaption>异主链锁 · 实用命运雕刻者 · 符文之痂 · 明晰思维符文守卫 · 决心活力 · 时之守护 · 元素易伤 · 奔走之门 · 庇护典籍 · 醒能编织者护甲 · 自由符文护卫 · 深渊之渊圣所</figcaption>
-            </figure>
-        </section>
-
-        <!-- ===== 炼金 ===== -->
-        <section id="alchemy" class="card section">
-            <header class="section-head">
-                <span class="section-num">04</span>
-                <div>
-                    <h3>炼金指南 · 生命神效药剂</h3>
-                    <p>三合一回复药，副本 / PVP 常备</p>
-                </div>
-            </header>
-
-            <div class="alchemy-grid">
-                <figure class="alchemy-image">
-                    <img src="img/alchemy.png" alt="生命神效药剂配方" loading="lazy" data-zoom>
-                </figure>
-                <div class="alchemy-info">
-                    <h4>生命神效药剂 &lt;Essence of Health&gt;</h4>
-                    <p class="meta">等级 50 · CP 150 · 冷却 45 秒</p>
-
-                    <div class="potion-effects">
-                        <div><span class="dot c-red"></span>立即恢复 <strong>8369</strong> 生命；获得"不屈（强）"效果，30% 生命恢复 / 52.8 秒</div>
-                        <div><span class="dot c-blue"></span>立即恢复 <strong>7582</strong> 魔法；获得"智力（强）"效果，30% 魔法恢复 / 47.6 秒</div>
-                        <div><span class="dot c-green"></span>立即恢复 <strong>7582</strong> 耐力；获得"耐久（强）"效果，30% 耐力恢复 / 47.6 秒</div>
-                    </div>
-
-                    <div class="recipe">
-                        <h5>配方</h5>
-                        <div class="recipe-items">
-                            <div class="ingredient"><span class="ic">🧪</span>洛克汗的眼泪（溶剂）</div>
-                            <div class="ingredient"><span class="ic">🌿</span>牛舌草</div>
-                            <div class="ingredient"><span class="ic">🌸</span>蝼斗花</div>
-                            <div class="ingredient"><span class="ic">🌼</span>山花</div>
+                        <div class="route-card">
+                            <h4>④ 序章 → DLC</h4>
+                            <p>序章任务即各 DLC 预告。可按口味选择：魔神三部曲、艾斯维尔、灰色沼泽、黑木、高岛、死灵之地、黄金大道……</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </details>
         </section>
 
-        <!-- ===== 地图 ===== -->
-        <section id="map" class="card section">
-            <header class="section-head">
-                <span class="section-num">05</span>
-                <div>
-                    <h3>地图参考 · Alik'r Desert</h3>
-                    <p>UESP Gamemap 截图（常用资源点位）</p>
-                </div>
-            </header>
-            <figure class="full-image">
-                <img src="img/map.png" alt="UESP Alik'r Desert 地图" loading="lazy" data-zoom>
-                <figcaption>
-                    完整地图： <a href="https://gamemap.uesp.net/eso/" target="_blank" rel="noopener">gamemap.uesp.net/eso</a>
-                </figcaption>
-            </figure>
-        </section>
-
-        <!-- ===== 日常 ===== -->
-        <section id="daily" class="card section">
-            <header class="section-head">
-                <span class="section-num">06</span>
-                <div>
-                    <h3>每日清单</h3>
-                    <p>上线必做的三件事</p>
-                </div>
-            </header>
-
-            <div class="daily-grid">
-                <label class="daily-item">
-                    <input type="checkbox" data-key="daily-horse">
-                    <span class="daily-num">01</span>
-                    <span class="daily-content">
-                        <strong>马术训练</strong>
-                        <em>每天去马厩花钱+1，体力 / 速度 / 载重择一</em>
-                    </span>
-                </label>
-                <label class="daily-item">
-                    <input type="checkbox" data-key="daily-craft">
-                    <span class="daily-num">02</span>
-                    <span class="daily-content">
-                        <strong>制作任务</strong>
-                        <em>各职业制作板凳的日常委托（铁匠 / 缝纫 / 木工 / 炼金 / 附魔 / 烹饪）</em>
-                    </span>
-                </label>
-                <label class="daily-item">
-                    <input type="checkbox" data-key="daily-random">
-                    <span class="daily-num">03</span>
-                    <span class="daily-content">
-                        <strong>普随副本</strong>
-                        <em>通过组队工具进行的随机普通副本，给丰厚经验 / 奖励箱</em>
-                    </span>
-                </label>
-            </div>
-            <p class="daily-tip">勾选状态会保存在本地浏览器，第二天会自动重置（请手动取消，或刷新即可保留进度记忆）。</p>
-        </section>
-
-        <!-- ===== 小贴士 ===== -->
-        <section id="tips" class="card section">
-            <header class="section-head">
-                <span class="section-num">07</span>
-                <div>
-                    <h3>关键小贴士</h3>
-                    <p>玩过才知道的小细节</p>
-                </div>
-            </header>
-
-            <div class="tips-grid">
-                <div class="tip">
-                    <span class="tip-tag">职业</span>
-                    <h4>裂谷可以修改副职业</h4>
-                    <p>前往 <strong>裂谷（Riften）</strong> 找对应 NPC 即可重置 / 修改副职业组合，无需注销角色重练。</p>
-                </div>
-                <div class="tip">
-                    <span class="tip-tag">市场</span>
-                    <h4>查物价用 TTC</h4>
-                    <p>泰姆瑞尔交易中心可以查询全服公会商店均价：<br>
-                        <a href="https://us.tamrieltradecentre.com/pc/Trade?lang=zh-CN" target="_blank" rel="noopener">us.tamrieltradecentre.com/pc/Trade</a>
-                    </p>
-                </div>
-                <div class="tip">
-                    <span class="tip-tag">情报</span>
-                    <h4>中文社区 ESOCN</h4>
-                    <p>资讯 / 攻略 / 视频汇总 ：<a href="https://esocn.com.cn/" target="_blank" rel="noopener">esocn.com.cn</a></p>
-                </div>
-                <div class="tip">
-                    <span class="tip-tag">流程</span>
-                    <h4>本体剧情顺序</h4>
-                    <p>世界主线 → 阵营线（任选） → 停战会议 → 冷港 → 序章 → DLC，不要乱跳，体验感会更连贯。</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 资源链接 ===== -->
-        <section id="links" class="card section">
-            <header class="section-head">
-                <span class="section-num">08</span>
-                <div>
-                    <h3>常用资源 & 工具</h3>
-                    <p>外站快速跳转</p>
-                </div>
-            </header>
-
-            <div class="links-grid">
-                <a class="link-card" href="https://esocn.com.cn/" target="_blank" rel="noopener">
-                    <span class="link-icon">🐉</span>
-                    <strong>ESOCN 中文社区</strong>
-                    <em>esocn.com.cn</em>
-                </a>
-                <a class="link-card" href="https://us.tamrieltradecentre.com/pc/Trade?lang=zh-CN" target="_blank" rel="noopener">
-                    <span class="link-icon">💰</span>
-                    <strong>泰姆瑞尔交易中心</strong>
-                    <em>查询全服物价</em>
-                </a>
-                <a class="link-card" href="https://gamemap.uesp.net/eso/" target="_blank" rel="noopener">
-                    <span class="link-icon">🗺️</span>
-                    <strong>UESP 互动地图</strong>
-                    <em>资源点 / 任务 / 神龛位置</em>
-                </a>
-                <a class="link-card" href="https://en.uesp.net/wiki/Online:Online" target="_blank" rel="noopener">
-                    <span class="link-icon">📖</span>
-                    <strong>UESP Wiki</strong>
-                    <em>权威英文资料站</em>
-                </a>
-            </div>
-        </section>
 
     </main>
 
     <footer class="footer">
-        <p>© <span id="year"></span> 湮灭之书 · 个人 ESO 攻略笔记 · 持续更新中</p>
+        <div class="footer-links">
+            <a href="https://esocn.com.cn/" target="_blank" rel="noopener">
+                <span class="fl-icon">🐉</span>
+                <strong>ESOCN 中文社区</strong>
+                <em>esocn.com.cn</em>
+            </a>
+            <a href="https://us.tamrieltradecentre.com/pc/Trade?lang=zh-CN" target="_blank" rel="noopener">
+                <span class="fl-icon">💰</span>
+                <strong>泰姆瑞尔交易中心</strong>
+                <em>查询全服物价</em>
+            </a>
+            <a href="https://en.uesp.net/wiki/Online:Online" target="_blank" rel="noopener">
+                <span class="fl-icon">📖</span>
+                <strong>UESP Wiki</strong>
+                <em>权威英文资料站</em>
+            </a>
+        </div>
+        <p>© <span id="year"></span> 阿琛与伞 · 个人 ESO 攻略笔记 · 持续更新中</p>
         <p class="muted">All rights of ESO assets belong to ZeniMax / Bethesda. This is a fan-made personal notebook.</p>
     </footer>
 
