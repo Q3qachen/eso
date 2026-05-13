@@ -88,35 +88,11 @@
 
 /* ===== 药水食物合集 ===== */
 (function () {
-    var TAGS_KEY  = 'eso_potion_tags';
-    var ITEMS_KEY = 'eso_potion_items';
-    var DEFAULT_TAGS  = ['血上限', '耐上限', '魔上限', '血回复', '耐回复', '魔回复'];
-    var DEFAULT_ITEMS = [{
-        id: 1,
-        name: '蛊惑的糖果骷髅头',
-        type: '食物',
-        tags: ['血上限', '耐上限', '魔上限', '血回复'],
-        image: 'img/sugar-skulls.png'
-    }];
 
-    function getTags()  {
-        try { return JSON.parse(localStorage.getItem(TAGS_KEY))  || DEFAULT_TAGS.slice();  } catch(e) { return DEFAULT_TAGS.slice(); }
-    }
-    function getItems() {
-        try { return JSON.parse(localStorage.getItem(ITEMS_KEY)) || DEFAULT_ITEMS.slice(); } catch(e) { return DEFAULT_ITEMS.slice(); }
-    }
-    function saveTags(t)  { try { localStorage.setItem(TAGS_KEY,  JSON.stringify(t)); } catch(e) {} }
-    function saveItems(i) {
-        try {
-            localStorage.setItem(ITEMS_KEY, JSON.stringify(i));
-            return true;
-        } catch(e) {
-            alert('保存失败：存储空间不足，请尝试使用更小的图片。');
-            return false;
-        }
-    }
+    // ---------- 状态缓存（替代 localStorage）----------
+    var state = { items: [], tags: [] };
 
-    // 标签颜色映射（未配置的走默认金色）
+    // ---------- 标签颜色映射 ----------
     var TAG_COLORS = {
         '血上限': { bg: 'rgba(220,80,80,.18)',   border: 'rgba(220,80,80,.55)',   text: '#e87878' },
         '血回复': { bg: 'rgba(220,80,80,.10)',   border: 'rgba(220,80,80,.35)',   text: '#d4a0a0' },
@@ -132,20 +108,38 @@
         return 'background:' + c.bg + ';border-color:' + c.border + ';color:' + c.text + ';';
     }
 
-    // 首次访问时写入默认数据
-    if (!localStorage.getItem(ITEMS_KEY)) saveItems(DEFAULT_ITEMS);
-    if (!localStorage.getItem(TAGS_KEY))  saveTags(DEFAULT_TAGS);
-
     function esc(s) {
         return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    // ---------- API 工具函数 ----------
+    function apiGet(action) {
+        return fetch('api.php?action=' + action).then(function (r) { return r.json(); });
+    }
+    function apiPost(action, data) {
+        return fetch('api.php?action=' + action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(function (r) { return r.json(); });
+    }
+
+    function loadAll(callback) {
+        apiGet('get_all').then(function (data) {
+            state.items = data.items || [];
+            state.tags  = data.tags  || [];
+            if (callback) callback();
+        }).catch(function () {
+            console.error('加载数据失败，请检查 api.php 是否正常');
+        });
+    }
+
     // ---------- 搜索 & 筛选状态 ----------
-    var searchQuery     = '';
+    var searchQuery      = '';
     var activeFilterTags = [];
 
     function getFilteredItems() {
-        var items = getItems();
+        var items = state.items.slice();
         if (searchQuery) {
             var q = searchQuery.toLowerCase();
             items = items.filter(function (i) { return i.name.toLowerCase().indexOf(q) >= 0; });
@@ -161,7 +155,7 @@
     function renderFilterBar() {
         var bar = document.getElementById('potionFilterTags');
         if (!bar) return;
-        bar.innerHTML = getTags().map(function (tag) {
+        bar.innerHTML = state.tags.map(function (tag) {
             var active = activeFilterTags.indexOf(tag) >= 0;
             var c = TAG_COLORS[tag] || TAG_DEFAULT;
             var style = active
@@ -204,8 +198,8 @@
             var imgHtml = item.image
                 ? '<img src="' + esc(item.image) + '" alt="' + esc(item.name) + '">'
                 : '<span class="pr-noimg">无图片</span>';
-            var isFood  = item.type === '食物';
-            var typeCls = isFood ? 'pr-type-food' : 'pr-type-potion';
+            var isFood    = item.type === '食物';
+            var typeCls   = isFood ? 'pr-type-food' : 'pr-type-potion';
             var typeLabel = isFood ? '🍖 食物' : '🧪 药水';
             return '<div class="potions-row">'
                 + '<div class="pr-img">' + imgHtml + '</div>'
@@ -236,8 +230,9 @@
                 e.stopPropagation();
                 var id = parseInt(btn.getAttribute('data-id'), 10);
                 if (!confirm('确定删除这条记录？')) return;
-                saveItems(getItems().filter(function (i) { return i.id !== id; }));
-                renderPotions();
+                apiPost('delete_item', { id: id }).then(function () {
+                    loadAll(function () { renderFilterBar(); renderPotions(); });
+                });
             });
         });
 
@@ -247,7 +242,7 @@
                 if (e.target.classList.contains('p-card-del')) return;
                 if (e.target.tagName === 'IMG' && e.target.closest('.pr-img')) return;
                 var id = parseInt(row.querySelector('.p-card-del').getAttribute('data-id'), 10);
-                var item = getItems().find(function (i) { return i.id === id; });
+                var item = state.items.find(function (i) { return i.id === id; });
                 if (item) openModal(item);
             });
         });
@@ -269,18 +264,18 @@
     }
 
     // ---------- 弹窗 ----------
-    var modal      = document.getElementById('potionModal');
-    var imgInput   = document.getElementById('pImgInput');
-    var imgPreview = document.getElementById('pImgPreview');
-    var nameInput  = document.getElementById('pNameInput');
-    var tagsList   = document.getElementById('pTagsList');
+    var modal       = document.getElementById('potionModal');
+    var imgInput    = document.getElementById('pImgInput');
+    var imgPreview  = document.getElementById('pImgPreview');
+    var nameInput   = document.getElementById('pNameInput');
+    var tagsList    = document.getElementById('pTagsList');
     var newTagInput = document.getElementById('pNewTagInput');
-    var addTagBtn  = document.getElementById('pAddTagBtn');
-    var cancelBtn  = document.getElementById('pCancelBtn');
-    var closeBtn   = document.getElementById('pCloseBtn');
-    var saveBtn    = document.getElementById('pSaveBtn');
-    var addBtn     = document.getElementById('addPotionBtn');
-    var typeBtns   = document.querySelectorAll('.p-type-btn');
+    var addTagBtn   = document.getElementById('pAddTagBtn');
+    var cancelBtn   = document.getElementById('pCancelBtn');
+    var closeBtn    = document.getElementById('pCloseBtn');
+    var saveBtn     = document.getElementById('pSaveBtn');
+    var addBtn      = document.getElementById('addPotionBtn');
+    var typeBtns    = document.querySelectorAll('.p-type-btn');
     var pendingImg  = null;
     var pendingType = '药水';
     var editingId   = null;
@@ -302,7 +297,7 @@
     function renderTagList(initChecked) {
         if (!tagsList) return;
         var checked = initChecked !== undefined ? initChecked : getCheckedTags();
-        tagsList.innerHTML = getTags().map(function (tag) {
+        tagsList.innerHTML = state.tags.map(function (tag) {
             var chk = checked.indexOf(tag) >= 0 ? ' checked' : '';
             return '<label class="p-tag-row">'
                 + '<input type="checkbox" value="' + esc(tag) + '"' + chk + '>'
@@ -315,14 +310,13 @@
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 var tag = btn.getAttribute('data-tag');
-                saveTags(getTags().filter(function (t) { return t !== tag; }));
-                saveItems(getItems().map(function (item) {
-                    item.tags = (item.tags || []).filter(function (t) { return t !== tag; });
-                    return item;
-                }));
-                renderTagList(undefined);
-                renderFilterBar();
-                renderPotions();
+                apiPost('delete_tag', { name: tag }).then(function () {
+                    loadAll(function () {
+                        renderTagList(undefined);
+                        renderFilterBar();
+                        renderPotions();
+                    });
+                });
             });
         });
     }
@@ -332,24 +326,20 @@
         pendingType = item ? (item.type || '药水') : '药水';
         pendingImg  = item ? (item.image || null) : null;
 
-        // 标题
         var titleEl = modal ? modal.querySelector('.p-modal-head h4') : null;
         if (titleEl) titleEl.textContent = item ? '编辑条目' : '添加条目';
 
-        // 类型按钮
         typeBtns.forEach(function (b) {
             b.classList.toggle('active', b.getAttribute('data-type') === pendingType);
         });
 
-        // 图片预览
         if (imgPreview) {
             imgPreview.innerHTML = pendingImg
                 ? '<img src="' + esc(pendingImg) + '" alt="预览">'
                 : '<span>点击选择 / Ctrl+V 粘贴</span>';
         }
 
-        // 名称
-        if (nameInput)  nameInput.value = item ? item.name : '';
+        if (nameInput)   nameInput.value  = item ? item.name : '';
         if (newTagInput) newTagInput.value = '';
 
         renderTagList(item ? (item.tags || []) : []);
@@ -429,17 +419,24 @@
     function doAddTag() {
         var val = newTagInput ? newTagInput.value.trim() : '';
         if (!val) return;
-        var tags = getTags();
-        if (tags.indexOf(val) < 0) { tags.push(val); saveTags(tags); }
-        renderTagList();
-        // 自动勾选新标签
-        if (tagsList) {
-            var cb = tagsList.querySelector('input[value="' + esc(val) + '"]');
-            if (cb) cb.checked = true;
+        if (state.tags.indexOf(val) >= 0) {
+            // 标签已存在，直接勾选
+            if (tagsList) {
+                var cb = tagsList.querySelector('input[value="' + esc(val) + '"]');
+                if (cb) cb.checked = true;
+            }
+            if (newTagInput) newTagInput.value = '';
+            return;
         }
+        var currentChecked = getCheckedTags();
         if (newTagInput) newTagInput.value = '';
+        apiPost('save_tag', { name: val }).then(function () {
+            loadAll(function () {
+                renderTagList(currentChecked.concat([val]));
+            });
+        });
     }
-    if (addTagBtn)  addTagBtn.addEventListener('click', doAddTag);
+    if (addTagBtn)   addTagBtn.addEventListener('click', doAddTag);
     if (newTagInput) newTagInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); doAddTag(); }
     });
@@ -447,32 +444,39 @@
     if (saveBtn) saveBtn.addEventListener('click', function () {
         var name = nameInput ? nameInput.value.trim() : '';
         if (!name) { if (nameInput) nameInput.focus(); return; }
-        var items = getItems();
-        if (editingId !== null) {
-            // 编辑模式：更新现有条目
-            items = items.map(function (i) {
-                if (i.id !== editingId) return i;
-                return { id: i.id, name: name, type: pendingType, tags: getCheckedTags(), image: pendingImg || i.image || '' };
-            });
-        } else {
-            // 新建模式
-            var maxId = items.reduce(function (m, i) { return Math.max(m, i.id); }, 0);
-            items.push({ id: maxId + 1, name: name, type: pendingType, tags: getCheckedTags(), image: pendingImg || '' });
+
+        // 保存图片路径时去掉防缓存时间戳
+        var imageToSave = pendingImg ? pendingImg.split('?')[0] : '';
+
+        // 编辑模式且没有换图片，保留原图
+        if (editingId !== null && !imageToSave) {
+            var orig = state.items.find(function (i) { return i.id === editingId; });
+            if (orig) imageToSave = (orig.image || '').split('?')[0];
         }
-        if (saveItems(items)) {
-            // 清除搜索和筛选，确保新条目可见
+
+        var itemData = {
+            id:    editingId || 0,
+            name:  name,
+            type:  pendingType,
+            tags:  getCheckedTags(),
+            image: imageToSave
+        };
+
+        apiPost('save_item', itemData).then(function (res) {
+            if (res.error) { alert('保存失败：' + res.error); return; }
             searchQuery      = '';
             activeFilterTags = [];
             if (searchInput) searchInput.value = '';
-            // 确保板块是展开状态
             var potionDetails = document.querySelector('#potions details');
             if (potionDetails) potionDetails.open = true;
-            renderFilterBar();
-            renderPotions();
+            loadAll(function () { renderFilterBar(); renderPotions(); });
             closeModal();
-        }
+        });
     });
 
-    renderFilterBar();
-    renderPotions();
+    // ---------- 初始加载 ----------
+    loadAll(function () {
+        renderFilterBar();
+        renderPotions();
+    });
 })();
