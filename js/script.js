@@ -85,3 +85,394 @@
     });
 
 })();
+
+/* ===== 药水食物合集 ===== */
+(function () {
+    var TAGS_KEY  = 'eso_potion_tags';
+    var ITEMS_KEY = 'eso_potion_items';
+    var DEFAULT_TAGS  = ['血上限', '耐上限', '魔上限', '血回复', '耐回复', '魔回复'];
+    var DEFAULT_ITEMS = [{
+        id: 1,
+        name: '蛊惑的糖果骷髅头',
+        type: '食物',
+        tags: ['血上限', '耐上限', '魔上限', '血回复'],
+        image: 'img/sugar-skulls.png'
+    }];
+
+    function getTags()  {
+        try { return JSON.parse(localStorage.getItem(TAGS_KEY))  || DEFAULT_TAGS.slice();  } catch(e) { return DEFAULT_TAGS.slice(); }
+    }
+    function getItems() {
+        try { return JSON.parse(localStorage.getItem(ITEMS_KEY)) || DEFAULT_ITEMS.slice(); } catch(e) { return DEFAULT_ITEMS.slice(); }
+    }
+    function saveTags(t)  { try { localStorage.setItem(TAGS_KEY,  JSON.stringify(t)); } catch(e) {} }
+    function saveItems(i) {
+        try {
+            localStorage.setItem(ITEMS_KEY, JSON.stringify(i));
+            return true;
+        } catch(e) {
+            alert('保存失败：存储空间不足，请尝试使用更小的图片。');
+            return false;
+        }
+    }
+
+    // 标签颜色映射（未配置的走默认金色）
+    var TAG_COLORS = {
+        '血上限': { bg: 'rgba(220,80,80,.18)',   border: 'rgba(220,80,80,.55)',   text: '#e87878' },
+        '血回复': { bg: 'rgba(220,80,80,.10)',   border: 'rgba(220,80,80,.35)',   text: '#d4a0a0' },
+        '耐上限': { bg: 'rgba(80,185,110,.18)',  border: 'rgba(80,185,110,.55)',  text: '#6abf86' },
+        '耐回复': { bg: 'rgba(80,185,110,.10)',  border: 'rgba(80,185,110,.35)',  text: '#9ad4b0' },
+        '魔上限': { bg: 'rgba(130,110,220,.18)', border: 'rgba(130,110,220,.55)', text: '#a090e0' },
+        '魔回复': { bg: 'rgba(130,110,220,.10)', border: 'rgba(130,110,220,.35)', text: '#c0b0f0' }
+    };
+    var TAG_DEFAULT = { bg: 'rgba(212,168,87,.15)', border: 'rgba(212,168,87,.45)', text: '#f5d27a' };
+
+    function tagChipStyle(tag) {
+        var c = TAG_COLORS[tag] || TAG_DEFAULT;
+        return 'background:' + c.bg + ';border-color:' + c.border + ';color:' + c.text + ';';
+    }
+
+    // 首次访问时写入默认数据
+    if (!localStorage.getItem(ITEMS_KEY)) saveItems(DEFAULT_ITEMS);
+    if (!localStorage.getItem(TAGS_KEY))  saveTags(DEFAULT_TAGS);
+
+    function esc(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ---------- 搜索 & 筛选状态 ----------
+    var searchQuery     = '';
+    var activeFilterTags = [];
+
+    function getFilteredItems() {
+        var items = getItems();
+        if (searchQuery) {
+            var q = searchQuery.toLowerCase();
+            items = items.filter(function (i) { return i.name.toLowerCase().indexOf(q) >= 0; });
+        }
+        if (activeFilterTags.length) {
+            items = items.filter(function (i) {
+                return activeFilterTags.some(function (tag) { return (i.tags || []).indexOf(tag) >= 0; });
+            });
+        }
+        return items;
+    }
+
+    function renderFilterBar() {
+        var bar = document.getElementById('potionFilterTags');
+        if (!bar) return;
+        bar.innerHTML = getTags().map(function (tag) {
+            var active = activeFilterTags.indexOf(tag) >= 0;
+            var c = TAG_COLORS[tag] || TAG_DEFAULT;
+            var style = active
+                ? 'background:' + c.bg + ';border-color:' + c.border + ';color:' + c.text + ';font-weight:700;'
+                : 'color:' + c.text + ';border-color:' + c.border + ';';
+            return '<button type="button" class="potions-filter-chip' + (active ? ' active' : '') + '" data-tag="' + esc(tag) + '" style="' + style + '">' + esc(tag) + '</button>';
+        }).join('');
+        bar.querySelectorAll('.potions-filter-chip').forEach(function (chip) {
+            chip.addEventListener('click', function () {
+                var tag = chip.getAttribute('data-tag');
+                var idx = activeFilterTags.indexOf(tag);
+                if (idx >= 0) activeFilterTags.splice(idx, 1);
+                else activeFilterTags.push(tag);
+                renderFilterBar();
+                renderPotions();
+            });
+        });
+    }
+
+    var searchInput = document.getElementById('potionSearch');
+    if (searchInput) searchInput.addEventListener('input', function () {
+        searchQuery = searchInput.value.trim();
+        renderPotions();
+    });
+
+    // ---------- 渲染列表 ----------
+    function renderPotions() {
+        var grid = document.getElementById('potionsGrid');
+        if (!grid) return;
+        var items = getFilteredItems();
+        if (!items.length) {
+            grid.innerHTML = '<p class="potions-empty">暂无匹配条目</p>';
+            return;
+        }
+
+        function rowHtml(item) {
+            var tagsHtml = (item.tags || []).map(function (t) {
+                return '<span class="p-tag-chip" style="' + tagChipStyle(t) + '">' + esc(t) + '</span>';
+            }).join('');
+            var imgHtml = item.image
+                ? '<img src="' + esc(item.image) + '" alt="' + esc(item.name) + '">'
+                : '<span class="pr-noimg">无图片</span>';
+            var isFood  = item.type === '食物';
+            var typeCls = isFood ? 'pr-type-food' : 'pr-type-potion';
+            var typeLabel = isFood ? '🍖 食物' : '🧪 药水';
+            return '<div class="potions-row">'
+                + '<div class="pr-img">' + imgHtml + '</div>'
+                + '<div class="pr-main">'
+                + '<span class="pr-name">' + esc(item.name) + '</span>'
+                + '<span class="pr-type ' + typeCls + '">' + typeLabel + '</span>'
+                + '</div>'
+                + '<div class="pr-tags">' + tagsHtml + '</div>'
+                + '<button class="p-card-del" data-id="' + item.id + '" title="删除">×</button>'
+                + '</div>';
+        }
+
+        var potions = items.filter(function (i) { return i.type !== '食物'; });
+        var foods   = items.filter(function (i) { return i.type === '食物'; });
+        var html = '';
+        if (potions.length) {
+            html += '<div class="potions-group-label">🧪 药水</div>';
+            html += potions.map(rowHtml).join('');
+        }
+        if (foods.length) {
+            html += '<div class="potions-group-label">🍖 食物</div>';
+            html += foods.map(rowHtml).join('');
+        }
+        grid.innerHTML = html;
+
+        grid.querySelectorAll('.p-card-del').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var id = parseInt(btn.getAttribute('data-id'), 10);
+                if (!confirm('确定删除这条记录？')) return;
+                saveItems(getItems().filter(function (i) { return i.id !== id; }));
+                renderPotions();
+            });
+        });
+
+        // 点行打开编辑
+        grid.querySelectorAll('.potions-row').forEach(function (row) {
+            row.addEventListener('click', function (e) {
+                if (e.target.classList.contains('p-card-del')) return;
+                if (e.target.tagName === 'IMG' && e.target.closest('.pr-img')) return;
+                var id = parseInt(row.querySelector('.p-card-del').getAttribute('data-id'), 10);
+                var item = getItems().find(function (i) { return i.id === id; });
+                if (item) openModal(item);
+            });
+        });
+
+        // 图片点击放大（复用已有灯箱）
+        var lb    = document.getElementById('lightbox');
+        var lbImg = document.getElementById('lightboxImg');
+        grid.querySelectorAll('.pr-img img').forEach(function (img) {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (!lb || !lbImg) return;
+                lbImg.src = img.src;
+                lbImg.alt = img.alt || '';
+                lb.classList.add('open');
+                lb.setAttribute('aria-hidden', 'false');
+            });
+        });
+    }
+
+    // ---------- 弹窗 ----------
+    var modal      = document.getElementById('potionModal');
+    var imgInput   = document.getElementById('pImgInput');
+    var imgPreview = document.getElementById('pImgPreview');
+    var nameInput  = document.getElementById('pNameInput');
+    var tagsList   = document.getElementById('pTagsList');
+    var newTagInput = document.getElementById('pNewTagInput');
+    var addTagBtn  = document.getElementById('pAddTagBtn');
+    var cancelBtn  = document.getElementById('pCancelBtn');
+    var closeBtn   = document.getElementById('pCloseBtn');
+    var saveBtn    = document.getElementById('pSaveBtn');
+    var addBtn     = document.getElementById('addPotionBtn');
+    var typeBtns   = document.querySelectorAll('.p-type-btn');
+    var pendingImg  = null;
+    var pendingType = '药水';
+    var editingId   = null;
+
+    typeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            typeBtns.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            pendingType = btn.getAttribute('data-type');
+        });
+    });
+
+    function getCheckedTags() {
+        if (!tagsList) return [];
+        return Array.prototype.slice.call(tagsList.querySelectorAll('input:checked'))
+            .map(function (cb) { return cb.value; });
+    }
+
+    function renderTagList(initChecked) {
+        if (!tagsList) return;
+        var checked = initChecked !== undefined ? initChecked : getCheckedTags();
+        tagsList.innerHTML = getTags().map(function (tag) {
+            var chk = checked.indexOf(tag) >= 0 ? ' checked' : '';
+            return '<label class="p-tag-row">'
+                + '<input type="checkbox" value="' + esc(tag) + '"' + chk + '>'
+                + '<span>' + esc(tag) + '</span>'
+                + '<button type="button" class="p-tag-del-btn" data-tag="' + esc(tag) + '">×</button>'
+                + '</label>';
+        }).join('');
+
+        tagsList.querySelectorAll('.p-tag-del-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var tag = btn.getAttribute('data-tag');
+                saveTags(getTags().filter(function (t) { return t !== tag; }));
+                saveItems(getItems().map(function (item) {
+                    item.tags = (item.tags || []).filter(function (t) { return t !== tag; });
+                    return item;
+                }));
+                renderTagList(undefined);
+                renderFilterBar();
+                renderPotions();
+            });
+        });
+    }
+
+    function openModal(item) {
+        editingId   = item ? item.id : null;
+        pendingType = item ? (item.type || '药水') : '药水';
+        pendingImg  = item ? (item.image || null) : null;
+
+        // 标题
+        var titleEl = modal ? modal.querySelector('.p-modal-head h4') : null;
+        if (titleEl) titleEl.textContent = item ? '编辑条目' : '添加条目';
+
+        // 类型按钮
+        typeBtns.forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-type') === pendingType);
+        });
+
+        // 图片预览
+        if (imgPreview) {
+            imgPreview.innerHTML = pendingImg
+                ? '<img src="' + esc(pendingImg) + '" alt="预览">'
+                : '<span>点击选择 / Ctrl+V 粘贴</span>';
+        }
+
+        // 名称
+        if (nameInput)  nameInput.value = item ? item.name : '';
+        if (newTagInput) newTagInput.value = '';
+
+        renderTagList(item ? (item.tags || []) : []);
+        if (modal) { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+    }
+
+    function closeModal() {
+        if (modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+    }
+
+    function setPreviewImg(src) {
+        pendingImg = src;
+        if (imgPreview) imgPreview.innerHTML = '<img src="' + esc(src) + '" alt="预览">';
+    }
+
+    function fallbackBase64(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+                var MAX = 400, w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else        { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                setPreviewImg(canvas.toDataURL('image/jpeg', 0.82));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadImgFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        var fd = new FormData();
+        fd.append('image', file);
+        fetch('upload.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.path) {
+                    setPreviewImg(data.path + '?t=' + Date.now());
+                } else {
+                    fallbackBase64(file);
+                }
+            })
+            .catch(function () { fallbackBase64(file); });
+    }
+
+    if (imgInput) imgInput.addEventListener('change', function () {
+        loadImgFile(imgInput.files[0]);
+    });
+
+    // 弹窗打开时支持 Ctrl+V 粘贴图片
+    document.addEventListener('paste', function (e) {
+        if (!modal || !modal.classList.contains('open')) return;
+        var items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type.startsWith('image/')) {
+                loadImgFile(items[i].getAsFile());
+                break;
+            }
+        }
+    });
+
+    if (addBtn) addBtn.addEventListener('click', function () {
+        var potionDetails = document.querySelector('#potions details');
+        if (potionDetails) potionDetails.open = true;
+        openModal();
+    });
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (closeBtn)  closeBtn.addEventListener('click', closeModal);
+
+    function doAddTag() {
+        var val = newTagInput ? newTagInput.value.trim() : '';
+        if (!val) return;
+        var tags = getTags();
+        if (tags.indexOf(val) < 0) { tags.push(val); saveTags(tags); }
+        renderTagList();
+        // 自动勾选新标签
+        if (tagsList) {
+            var cb = tagsList.querySelector('input[value="' + esc(val) + '"]');
+            if (cb) cb.checked = true;
+        }
+        if (newTagInput) newTagInput.value = '';
+    }
+    if (addTagBtn)  addTagBtn.addEventListener('click', doAddTag);
+    if (newTagInput) newTagInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); doAddTag(); }
+    });
+
+    if (saveBtn) saveBtn.addEventListener('click', function () {
+        var name = nameInput ? nameInput.value.trim() : '';
+        if (!name) { if (nameInput) nameInput.focus(); return; }
+        var items = getItems();
+        if (editingId !== null) {
+            // 编辑模式：更新现有条目
+            items = items.map(function (i) {
+                if (i.id !== editingId) return i;
+                return { id: i.id, name: name, type: pendingType, tags: getCheckedTags(), image: pendingImg || i.image || '' };
+            });
+        } else {
+            // 新建模式
+            var maxId = items.reduce(function (m, i) { return Math.max(m, i.id); }, 0);
+            items.push({ id: maxId + 1, name: name, type: pendingType, tags: getCheckedTags(), image: pendingImg || '' });
+        }
+        if (saveItems(items)) {
+            // 清除搜索和筛选，确保新条目可见
+            searchQuery      = '';
+            activeFilterTags = [];
+            if (searchInput) searchInput.value = '';
+            // 确保板块是展开状态
+            var potionDetails = document.querySelector('#potions details');
+            if (potionDetails) potionDetails.open = true;
+            renderFilterBar();
+            renderPotions();
+            closeModal();
+        }
+    });
+
+    renderFilterBar();
+    renderPotions();
+})();

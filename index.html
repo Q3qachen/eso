@@ -21,6 +21,7 @@
         </div>
         <nav class="nav" id="nav">
             <a href="#story">主线</a>
+            <a href="#potions">食物药水</a>
         </nav>
         <button class="nav-toggle" id="navToggle" aria-label="切换菜单">☰</button>
     </header>
@@ -73,7 +74,67 @@
         </section>
 
 
+        <!-- ===== 食物药水合集 ===== -->
+        <section id="potions" class="card section">
+            <details>
+                <summary class="section-head">
+                    <span class="section-num">02</span>
+                    <div>
+                        <h3>食物 &amp; 药水合集</h3>
+                        <p>自用食物与药水配方记录</p>
+                    </div>
+                    <span class="collapse-arrow">▾</span>
+                </summary>
+                <div class="potions-bar">
+                    <button class="p-btn-primary" id="addPotionBtn">＋ 添加</button>
+                </div>
+                <input type="text" id="potionSearch" class="p-input potions-search" placeholder="🔍 搜索名称…">
+                <div class="potions-filter-tags" id="potionFilterTags"></div>
+                <div class="potions-list" id="potionsGrid"></div>
+            </details>
+        </section>
+
     </main>
+
+    <!-- ===== 食物药水弹窗 ===== -->
+    <div class="p-modal" id="potionModal" aria-hidden="true">
+        <div class="p-modal-box">
+            <div class="p-modal-head">
+                <h4>添加条目</h4>
+                <button class="p-modal-x" id="pCloseBtn">×</button>
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">类型</span>
+                <div class="p-type-toggle">
+                    <button type="button" class="p-type-btn active" data-type="药水">🧪 药水</button>
+                    <button type="button" class="p-type-btn" data-type="食物">🍖 食物</button>
+                </div>
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">图片</span>
+                <label class="p-img-upload" for="pImgInput">
+                    <div id="pImgPreview"><span>点击选择 / Ctrl+V 粘贴</span></div>
+                </label>
+                <input type="file" id="pImgInput" accept="image/*">
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">名称</span>
+                <input type="text" id="pNameInput" class="p-input" placeholder="例：生命神效药剂">
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">标签（可多选；点 × 可删除标签）</span>
+                <div id="pTagsList" class="p-tags-check-list"></div>
+                <div class="p-tag-adder">
+                    <input type="text" id="pNewTagInput" class="p-input" placeholder="输入新标签名称，回车确认">
+                    <button type="button" id="pAddTagBtn" class="p-btn-ghost">＋</button>
+                </div>
+            </div>
+            <div class="p-modal-footer">
+                <button type="button" id="pCancelBtn" class="p-btn-ghost">取消</button>
+                <button type="button" id="pSaveBtn" class="p-btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-links">
