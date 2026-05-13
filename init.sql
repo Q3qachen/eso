@@ -22,7 +22,3 @@ INSERT IGNORE INTO `potion_tags` (`name`) VALUES
   ('血上限'), ('耐上限'), ('魔上限'),
   ('血回复'), ('耐回复'), ('魔回复');
 
--- 默认条目（糖果骷髅头）
-INSERT IGNORE INTO `potion_items` (`name`, `type`, `image`, `tags`) VALUES
-  ('蛊惑的糖果骷髅头', '食物', 'img/sugar-skulls.png',
-   '["血上限","耐上限","魔上限","血回复"]');
