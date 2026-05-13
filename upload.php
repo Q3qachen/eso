@@ -8,7 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['image'])) {
 
 $dir = __DIR__ . '/img/potions/';
 if (!is_dir($dir)) {
-    mkdir($dir, 0755, true);
+    if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+        echo json_encode(['error' => '目录创建失败，请检查服务器写入权限']);
+        exit;
+    }
 }
 
 $file = $_FILES['image'];
