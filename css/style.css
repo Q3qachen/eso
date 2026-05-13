@@ -30,7 +30,7 @@ html { scroll-behavior: smooth; }
 
 body {
     margin: 0;
-    font-family: "Noto Serif SC", "Microsoft YaHei", serif;
+    font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
     color: var(--text);
     background: var(--bg-0);
     background-image:
@@ -50,7 +50,7 @@ a {
 a:hover { color: #fff; }
 
 h1, h2, h3, h4, h5 {
-    font-family: "Cinzel", "Noto Serif SC", serif;
+    font-family: "Cinzel", serif;
     letter-spacing: .04em;
     margin: 0;
 }
