@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <script>
     (function () {
         try {
-            if (localStorage.getItem('eso-theme') === 'light') {
+            if (localStorage.getItem('eso-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
-        } catch (e) {}
+        } catch (e) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
     })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +40,7 @@
                 <a href="#builds">构筑</a>
                 <a href="#potions">食物</a>
             </nav>
-            <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="切换为明亮主题" title="明亮 / 黑暗主题">☀</button>
+            <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="true" aria-label="切换为黑暗主题" title="明亮 / 黑暗主题">☽</button>
             <button class="nav-toggle" id="navToggle" aria-label="切换菜单">☰</button>
         </div>
     </header>
