@@ -1286,6 +1286,34 @@ details[open] .collapse-arrow { transform: rotate(180deg); }
     box-shadow: 0 8px 28px rgba(200,160,80,.55);
 }
 
+/* ========== LOADING STATE ========== */
+.section-loading {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text-mute);
+    font-size: 14px;
+    padding: 48px 0;
+    letter-spacing: .06em;
+}
+
+.section-loading::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--line-bright);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* ========== ANIMATIONS ========== */
 @keyframes fadeIn {
     from { opacity: 0; }

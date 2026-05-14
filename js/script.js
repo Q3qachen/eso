@@ -467,11 +467,19 @@
         });
     });
 
-    // ---------- 初始加载 ----------
-    loadAll(function () {
-        renderFilterBar();
-        renderPotions();
-    });
+    // ---------- 懒加载：首次展开才请求数据 ----------
+    var potionLoaded = false;
+    var potionDet = document.querySelector('#potions details');
+    if (potionDet) {
+        potionDet.addEventListener('toggle', function () {
+            if (potionDet.open && !potionLoaded) {
+                potionLoaded = true;
+                var grid = document.getElementById('potionsGrid');
+                if (grid) grid.innerHTML = '<p class="section-loading">加载中</p>';
+                loadAll(function () { renderFilterBar(); renderPotions(); });
+            }
+        });
+    }
 })();
 
 /* ===== 冒险笔记 ===== */
@@ -659,8 +667,19 @@
             });
     });
 
-    // ---------- 初始加载 ----------
-    loadAll(function () { renderFilterBar(); renderTips(); });
+    // ---------- 懒加载：首次展开才请求数据 ----------
+    var tipLoaded = false;
+    var tipDet = document.querySelector('#tips details');
+    if (tipDet) {
+        tipDet.addEventListener('toggle', function () {
+            if (tipDet.open && !tipLoaded) {
+                tipLoaded = true;
+                var grid = document.getElementById('tipsGrid');
+                if (grid) grid.innerHTML = '<p class="section-loading">加载中</p>';
+                loadAll(function () { renderFilterBar(); renderTips(); });
+            }
+        });
+    }
 })();
 
 /* ===== 装备合集 ===== */
@@ -944,8 +963,19 @@
             });
     });
 
-    // ---------- 初始加载 ----------
-    loadAll(renderEquip);
+    // ---------- 懒加载：首次展开才请求数据 ----------
+    var equipLoaded = false;
+    var equipDet = document.querySelector('#equipment details');
+    if (equipDet) {
+        equipDet.addEventListener('toggle', function () {
+            if (equipDet.open && !equipLoaded) {
+                equipLoaded = true;
+                var grid = document.getElementById('equipGrid');
+                if (grid) grid.innerHTML = '<p class="section-loading">加载中</p>';
+                loadAll(renderEquip);
+            }
+        });
+    }
 })();
 
 /* ===== 装备构筑 ===== */
@@ -1202,8 +1232,19 @@
             });
     });
 
-    // ---------- 初始加载 ----------
-    loadAll(renderBuilds);
+    // ---------- 懒加载：首次展开才请求数据 ----------
+    var buildLoaded = false;
+    var buildDet = document.querySelector('#builds details');
+    if (buildDet) {
+        buildDet.addEventListener('toggle', function () {
+            if (buildDet.open && !buildLoaded) {
+                buildLoaded = true;
+                var grid = document.getElementById('buildGrid');
+                if (grid) grid.innerHTML = '<p class="section-loading">加载中</p>';
+                loadAll(renderBuilds);
+            }
+        });
+    }
 
     // ===== 返回顶部按钮 =====
     var scrollTopBtn = document.getElementById('scrollTop');
