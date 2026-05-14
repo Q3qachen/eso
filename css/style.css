@@ -674,7 +674,7 @@ details[open] .collapse-arrow {
 
 .equip-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
 }
 
@@ -824,7 +824,7 @@ details[open] .collapse-arrow {
     .section-num { width: 44px; height: 44px; font-size: 16px; }
     .section-head h3 { font-size: 18px; }
     .potions-list { grid-template-columns: repeat(2, 1fr); }
-    .equip-list   { grid-template-columns: repeat(3, 1fr); }
+    .equip-list   { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 400px) {
