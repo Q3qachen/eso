@@ -191,24 +191,24 @@
             return;
         }
 
-        function rowHtml(item) {
+        function cardHtml(item) {
             var tagsHtml = (item.tags || []).map(function (t) {
                 return '<span class="p-tag-chip" style="' + tagChipStyle(t) + '">' + esc(t) + '</span>';
             }).join('');
             var imgHtml = item.image
                 ? '<img src="' + esc(item.image) + '" alt="' + esc(item.name) + '">'
                 : '<span class="pr-noimg">无图片</span>';
-            return '<div class="potions-row">'
-                + '<div class="pr-img">' + imgHtml + '</div>'
-                + '<div class="pr-main">'
-                + '<span class="pr-name">' + esc(item.name) + '</span>'
+            return '<div class="food-card">'
+                + '<div class="fc-img">' + imgHtml + '</div>'
+                + '<div class="fc-body">'
+                + '<span class="fc-name">' + esc(item.name) + '</span>'
+                + '<div class="fc-tags">' + tagsHtml + '</div>'
                 + '</div>'
-                + '<div class="pr-tags">' + tagsHtml + '</div>'
                 + '<button class="p-card-del" data-id="' + item.id + '" title="删除">×</button>'
                 + '</div>';
         }
 
-        grid.innerHTML = items.map(rowHtml).join('');
+        grid.innerHTML = items.map(cardHtml).join('');
 
         grid.querySelectorAll('.p-card-del').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
@@ -221,12 +221,12 @@
             });
         });
 
-        // 点行打开编辑
-        grid.querySelectorAll('.potions-row').forEach(function (row) {
-            row.addEventListener('click', function (e) {
+        // 点卡片打开编辑
+        grid.querySelectorAll('.food-card').forEach(function (card) {
+            card.addEventListener('click', function (e) {
                 if (e.target.classList.contains('p-card-del')) return;
-                if (e.target.tagName === 'IMG' && e.target.closest('.pr-img')) return;
-                var id = parseInt(row.querySelector('.p-card-del').getAttribute('data-id'), 10);
+                if (e.target.tagName === 'IMG' && e.target.closest('.fc-img')) return;
+                var id = parseInt(card.querySelector('.p-card-del').getAttribute('data-id'), 10);
                 var item = state.items.find(function (i) { return i.id === id; });
                 if (item) openModal(item);
             });
@@ -235,7 +235,7 @@
         // 图片点击放大（复用已有灯箱）
         var lb    = document.getElementById('lightbox');
         var lbImg = document.getElementById('lightboxImg');
-        grid.querySelectorAll('.pr-img img').forEach(function (img) {
+        grid.querySelectorAll('.fc-img img').forEach(function (img) {
             img.style.cursor = 'zoom-in';
             img.addEventListener('click', function (e) {
                 e.stopPropagation();
