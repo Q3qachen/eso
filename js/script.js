@@ -1,6 +1,41 @@
 (function () {
     'use strict';
 
+    var THEME_KEY = 'eso-theme';
+
+    function isLightTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'light';
+    }
+
+    function applyTheme(theme) {
+        var root = document.documentElement;
+        if (theme === 'light') {
+            root.setAttribute('data-theme', 'light');
+        } else {
+            root.removeAttribute('data-theme');
+        }
+        try {
+            localStorage.setItem(THEME_KEY, theme === 'light' ? 'light' : 'dark');
+        } catch (e) {}
+    }
+
+    function syncThemeToggle(btn) {
+        if (!btn) return;
+        var light = isLightTheme();
+        btn.setAttribute('aria-pressed', light ? 'true' : 'false');
+        btn.setAttribute('aria-label', light ? '切换为黑暗主题' : '切换为明亮主题');
+        btn.textContent = light ? '☽' : '☀';
+    }
+
+    var themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        syncThemeToggle(themeToggle);
+        themeToggle.addEventListener('click', function () {
+            applyTheme(isLightTheme() ? 'dark' : 'light');
+            syncThemeToggle(themeToggle);
+        });
+    }
+
     // ===== 年份 =====
     var yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();

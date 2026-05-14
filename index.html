@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <script>
+    (function () {
+        try {
+            if (localStorage.getItem('eso-theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        } catch (e) {}
+    })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>阿琛与伞 · 我的上古卷轴OL攻略库</title>
     <meta name="description" content="一位泰姆瑞尔旅人记录的上古卷轴OL（ESO）个人攻略笔记：主线流程、构筑、炼金、日常清单、交易工具等。">
@@ -26,6 +35,7 @@
             <a href="#builds">构筑</a>
             <a href="#potions">食物</a>
         </nav>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="切换为明亮主题" title="明亮 / 黑暗主题">☀</button>
         <button class="nav-toggle" id="navToggle" aria-label="切换菜单">☰</button>
     </header>
 
