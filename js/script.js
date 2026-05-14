@@ -146,7 +146,7 @@
         }
         if (activeFilterTags.length) {
             items = items.filter(function (i) {
-                return activeFilterTags.some(function (tag) { return (i.tags || []).indexOf(tag) >= 0; });
+                return activeFilterTags.every(function (tag) { return (i.tags || []).indexOf(tag) >= 0; });
             });
         }
         return items;
