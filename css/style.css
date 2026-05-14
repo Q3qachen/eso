@@ -341,7 +341,7 @@ details[open] .collapse-arrow {
 /* 卡片网格 */
 .potions-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 14px;
 }
 
@@ -661,4 +661,9 @@ details[open] .collapse-arrow {
     .section-head { gap: 14px; }
     .section-num { width: 44px; height: 44px; font-size: 16px; }
     .section-head h3 { font-size: 18px; }
+    .potions-list { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 400px) {
+    .potions-list { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 }
