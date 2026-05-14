@@ -21,8 +21,8 @@
         </div>
         <nav class="nav" id="nav">
             <a href="#story">主线</a>
-            <a href="#potions">食物</a>
             <a href="#equipment">装备</a>
+            <a href="#potions">食物</a>
         </nav>
         <button class="nav-toggle" id="navToggle" aria-label="切换菜单">☰</button>
     </header>
@@ -75,31 +75,11 @@
         </section>
 
 
-        <!-- ===== 食物合集 ===== -->
-        <section id="potions" class="card section">
-            <details>
-                <summary class="section-head">
-                    <span class="section-num">02</span>
-                    <div>
-                        <h3>食物合集</h3>
-                        <p>自用食物配方记录</p>
-                    </div>
-                    <span class="collapse-arrow">▾</span>
-                </summary>
-                <div class="potions-bar">
-                    <button class="p-btn-primary" id="addPotionBtn">＋ 添加</button>
-                </div>
-                <input type="text" id="potionSearch" class="p-input potions-search" placeholder="🔍 搜索名称…">
-                <div class="potions-filter-tags" id="potionFilterTags"></div>
-                <div class="potions-list" id="potionsGrid"></div>
-            </details>
-        </section>
-
         <!-- ===== 装备合集 ===== -->
         <section id="equipment" class="card section">
             <details>
                 <summary class="section-head">
-                    <span class="section-num">03</span>
+                    <span class="section-num">02</span>
                     <div>
                         <h3>装备合集</h3>
                         <p>套装与散件记录</p>
@@ -117,6 +97,26 @@
                     <button class="equip-role-tab" data-role="奶妈">✚ 奶妈</button>
                 </div>
                 <div class="equip-list" id="equipGrid"></div>
+            </details>
+        </section>
+
+        <!-- ===== 食物合集 ===== -->
+        <section id="potions" class="card section">
+            <details>
+                <summary class="section-head">
+                    <span class="section-num">03</span>
+                    <div>
+                        <h3>食物合集</h3>
+                        <p>自用食物配方记录</p>
+                    </div>
+                    <span class="collapse-arrow">▾</span>
+                </summary>
+                <div class="potions-bar">
+                    <button class="p-btn-primary" id="addPotionBtn">＋ 添加</button>
+                </div>
+                <input type="text" id="potionSearch" class="p-input potions-search" placeholder="🔍 搜索名称…">
+                <div class="potions-filter-tags" id="potionFilterTags"></div>
+                <div class="potions-list" id="potionsGrid"></div>
             </details>
         </section>
 
