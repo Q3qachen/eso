@@ -161,7 +161,7 @@
             var style = active
                 ? 'background:' + c.bg + ';border-color:' + c.border + ';color:' + c.text + ';font-weight:700;'
                 : 'color:' + c.text + ';border-color:' + c.border + ';';
-            return '<button type="button" class="potions-filter-chip' + (active ? ' active' : '') + '" data-tag="' + esc(tag) + '" style="' + style + '">' + esc(tag) + '</button>';
+            return '<button type="button" class="potions-filter-chip' + (active ? ' active' : '') + '" data-tag="' + esc(tag) + '" style="' + style + '">' + (active ? '✓ ' : '') + esc(tag) + '</button>';
         }).join('');
         bar.querySelectorAll('.potions-filter-chip').forEach(function (chip) {
             chip.addEventListener('click', function () {
