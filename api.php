@@ -148,6 +148,53 @@ switch ($action) {
         }
         break;
 
+    // ── 读取所有构筑 ──────────────────────────────────────────
+    case 'get_builds':
+        $items = [];
+        foreach ($pdo->query('SELECT id, name, role, image FROM build_items ORDER BY id ASC') as $row) {
+            $row['id'] = (int)$row['id'];
+            $items[]   = $row;
+        }
+        echo json_encode(['items' => $items], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ── 新建 / 编辑构筑 ───────────────────────────────────────
+    case 'save_build':
+        $data  = json_decode(file_get_contents('php://input'), true) ?: [];
+        $id    = (int)($data['id'] ?? 0);
+        $name  = trim($data['name'] ?? '');
+        $role  = in_array($data['role'] ?? '', ['输出', '坦克', '奶妈']) ? $data['role'] : '输出';
+        $image = trim($data['image'] ?? '');
+
+        if ($name === '') {
+            echo json_encode(['error' => '名称不能为空']);
+            break;
+        }
+
+        if ($id > 0) {
+            $stmt = $pdo->prepare('UPDATE build_items SET name=?, role=?, image=? WHERE id=?');
+            $stmt->execute([$name, $role, $image, $id]);
+            echo json_encode(['success' => true, 'id' => $id], JSON_UNESCAPED_UNICODE);
+        } else {
+            $stmt = $pdo->prepare('INSERT INTO build_items (name, role, image) VALUES (?, ?, ?)');
+            $stmt->execute([$name, $role, $image]);
+            echo json_encode(['success' => true, 'id' => (int)$pdo->lastInsertId()], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // ── 删除构筑 ──────────────────────────────────────────────
+    case 'delete_build':
+        $data = json_decode(file_get_contents('php://input'), true) ?: [];
+        $id   = (int)($data['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $pdo->prepare('DELETE FROM build_items WHERE id=?');
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => '无效ID']);
+        }
+        break;
+
     default:
         echo json_encode(['error' => '未知操作']);
 }

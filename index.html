@@ -21,6 +21,7 @@
         </div>
         <nav class="nav" id="nav">
             <a href="#story">主线</a>
+            <a href="#builds">构筑</a>
             <a href="#equipment">装备</a>
             <a href="#potions">食物</a>
         </nav>
@@ -75,11 +76,36 @@
         </section>
 
 
+        <!-- ===== 装备构筑 ===== -->
+        <section id="builds" class="card section">
+            <details>
+                <summary class="section-head">
+                    <span class="section-num">02</span>
+                    <div>
+                        <h3>装备构筑</h3>
+                        <p>职业构筑方案记录</p>
+                    </div>
+                    <span class="collapse-arrow">▾</span>
+                </summary>
+                <div class="equip-bar">
+                    <button class="p-btn-primary" id="addBuildBtn">＋ 添加</button>
+                </div>
+                <input type="text" id="buildSearch" class="p-input equip-search" placeholder="🔍 搜索构筑名称…">
+                <div class="equip-role-tabs" id="buildRoleTabs">
+                    <button class="equip-role-tab active" data-role="">全部</button>
+                    <button class="equip-role-tab" data-role="输出">⚔ 输出</button>
+                    <button class="equip-role-tab" data-role="坦克">🛡 坦克</button>
+                    <button class="equip-role-tab" data-role="奶妈">✚ 奶妈</button>
+                </div>
+                <div class="equip-list" id="buildGrid"></div>
+            </details>
+        </section>
+
         <!-- ===== 装备合集 ===== -->
         <section id="equipment" class="card section">
             <details>
                 <summary class="section-head">
-                    <span class="section-num">02</span>
+                    <span class="section-num">03</span>
                     <div>
                         <h3>装备合集</h3>
                         <p>套装与散件记录</p>
@@ -104,7 +130,7 @@
         <section id="potions" class="card section">
             <details>
                 <summary class="section-head">
-                    <span class="section-num">03</span>
+                    <span class="section-num">04</span>
                     <div>
                         <h3>食物合集</h3>
                         <p>自用食物配方记录</p>
@@ -121,6 +147,39 @@
         </section>
 
     </main>
+
+    <!-- ===== 构筑弹窗 ===== -->
+    <div class="p-modal" id="buildModal" aria-hidden="true">
+        <div class="p-modal-box">
+            <div class="p-modal-head">
+                <h4>添加构筑</h4>
+                <button class="p-modal-x" id="bdCloseBtn">×</button>
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">图片</span>
+                <label class="e-img-upload" for="bdImgInput">
+                    <div id="bdImgPreview"><span>点击选择 / Ctrl+V 粘贴</span></div>
+                </label>
+                <input type="file" id="bdImgInput" accept="image/*">
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">名称</span>
+                <input type="text" id="bdNameInput" class="p-input" placeholder="例：深渊法师·输出构筑">
+            </div>
+            <div class="p-form-group">
+                <span class="p-label">职业分类</span>
+                <div class="equip-role-select" id="bdRoleSelect">
+                    <button type="button" class="equip-role-opt active" data-role="输出">⚔ 输出</button>
+                    <button type="button" class="equip-role-opt" data-role="坦克">🛡 坦克</button>
+                    <button type="button" class="equip-role-opt" data-role="奶妈">✚ 奶妈</button>
+                </div>
+            </div>
+            <div class="p-modal-footer">
+                <button type="button" id="bdCancelBtn" class="p-btn-ghost">取消</button>
+                <button type="button" id="bdSaveBtn" class="p-btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ===== 食物弹窗 ===== -->
     <div class="p-modal" id="potionModal" aria-hidden="true">

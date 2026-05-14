@@ -737,8 +737,9 @@ details[open] .collapse-arrow {
     text-align: center;
 }
 
-/* 装备弹窗复用食物弹窗样式，仅 preview 区域覆盖 */
-#eImgPreview {
+/* 装备 & 构筑弹窗复用食物弹窗样式，仅 preview 区域覆盖 */
+#eImgPreview,
+#bdImgPreview {
     width: 100%;
     height: 200px;
     background: var(--bg-2);
@@ -752,9 +753,12 @@ details[open] .collapse-arrow {
     font-size: 13px;
     transition: border-color .2s;
 }
-#eImgPreview img { width: 100%; height: 100%; object-fit: contain; }
-#eImgInput { display: none; }
-.e-img-upload:hover #eImgPreview { border-color: var(--gold); }
+#eImgPreview img,
+#bdImgPreview img { width: 100%; height: 100%; object-fit: contain; }
+#eImgInput,
+#bdImgInput { display: none; }
+.e-img-upload:hover #eImgPreview,
+.e-img-upload:hover #bdImgPreview { border-color: var(--gold); }
 .e-img-upload { cursor: pointer; display: block; }
 
 /* ========== 灯箱 ========== */
