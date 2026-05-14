@@ -5,22 +5,22 @@
     var yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // ===== Hero 导航：点击自动展开目标区块，关闭其他 =====
+    // ===== 导航点击：自动展开目标区块，关闭其他 =====
     var allDetails = document.querySelectorAll('.card details');
 
-    document.querySelectorAll('.hero-nav-hint a[href^="#"]').forEach(function (a) {
+    function expandSection(href) {
+        var targetId = href.slice(1);
+        var targetSection = document.getElementById(targetId);
+        if (!targetSection) return;
+        var targetDetails = targetSection.querySelector('details');
+        allDetails.forEach(function (det) {
+            det.open = (det === targetDetails);
+        });
+    }
+
+    document.querySelectorAll('.hero-nav-hint a[href^="#"], .nav a[href^="#"]').forEach(function (a) {
         a.addEventListener('click', function () {
-            var targetId = a.getAttribute('href').slice(1);
-            var targetSection = document.getElementById(targetId);
-            if (!targetSection) return;
-            var targetDetails = targetSection.querySelector('details');
-            allDetails.forEach(function (det) {
-                if (det === targetDetails) {
-                    det.open = true;
-                } else {
-                    det.open = false;
-                }
-            });
+            expandSection(a.getAttribute('href'));
         });
     });
 
