@@ -86,7 +86,7 @@
 
 })();
 
-/* ===== 药水食物合集 ===== */
+/* ===== 食物合集 ===== */
 (function () {
 
     // ---------- 状态缓存（替代 localStorage）----------
@@ -198,32 +198,17 @@
             var imgHtml = item.image
                 ? '<img src="' + esc(item.image) + '" alt="' + esc(item.name) + '">'
                 : '<span class="pr-noimg">无图片</span>';
-            var isFood    = item.type === '食物';
-            var typeCls   = isFood ? 'pr-type-food' : 'pr-type-potion';
-            var typeLabel = isFood ? '🍖 食物' : '🧪 药水';
             return '<div class="potions-row">'
                 + '<div class="pr-img">' + imgHtml + '</div>'
                 + '<div class="pr-main">'
                 + '<span class="pr-name">' + esc(item.name) + '</span>'
-                + '<span class="pr-type ' + typeCls + '">' + typeLabel + '</span>'
                 + '</div>'
                 + '<div class="pr-tags">' + tagsHtml + '</div>'
                 + '<button class="p-card-del" data-id="' + item.id + '" title="删除">×</button>'
                 + '</div>';
         }
 
-        var potions = items.filter(function (i) { return i.type !== '食物'; });
-        var foods   = items.filter(function (i) { return i.type === '食物'; });
-        var html = '';
-        if (potions.length) {
-            html += '<div class="potions-group-label">🧪 药水</div>';
-            html += potions.map(rowHtml).join('');
-        }
-        if (foods.length) {
-            html += '<div class="potions-group-label">🍖 食物</div>';
-            html += foods.map(rowHtml).join('');
-        }
-        grid.innerHTML = html;
+        grid.innerHTML = items.map(rowHtml).join('');
 
         grid.querySelectorAll('.p-card-del').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
@@ -275,18 +260,8 @@
     var closeBtn    = document.getElementById('pCloseBtn');
     var saveBtn     = document.getElementById('pSaveBtn');
     var addBtn      = document.getElementById('addPotionBtn');
-    var typeBtns    = document.querySelectorAll('.p-type-btn');
     var pendingImg  = null;
-    var pendingType = '药水';
     var editingId   = null;
-
-    typeBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            typeBtns.forEach(function (b) { b.classList.remove('active'); });
-            btn.classList.add('active');
-            pendingType = btn.getAttribute('data-type');
-        });
-    });
 
     function getCheckedTags() {
         if (!tagsList) return [];
@@ -322,16 +297,11 @@
     }
 
     function openModal(item) {
-        editingId   = item ? item.id : null;
-        pendingType = item ? (item.type || '药水') : '药水';
-        pendingImg  = item ? (item.image || null) : null;
+        editingId  = item ? item.id : null;
+        pendingImg = item ? (item.image || null) : null;
 
         var titleEl = modal ? modal.querySelector('.p-modal-head h4') : null;
         if (titleEl) titleEl.textContent = item ? '编辑条目' : '添加条目';
-
-        typeBtns.forEach(function (b) {
-            b.classList.toggle('active', b.getAttribute('data-type') === pendingType);
-        });
 
         if (imgPreview) {
             imgPreview.innerHTML = pendingImg
@@ -461,7 +431,7 @@
         var itemData = {
             id:    editingId || 0,
             name:  name,
-            type:  pendingType,
+            type:  '食物',
             tags:  getCheckedTags(),
             image: imageToSave
         };

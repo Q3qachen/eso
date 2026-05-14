@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `potion_tags` (
 CREATE TABLE IF NOT EXISTS `potion_items` (
   `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name`       VARCHAR(255) NOT NULL,
-  `type`       VARCHAR(50)  NOT NULL DEFAULT '药水',
+  `type`       VARCHAR(50)  NOT NULL DEFAULT '食物',
   `image`      MEDIUMTEXT,
   `tags`       TEXT,
   `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -28,7 +28,7 @@ switch ($action) {
         $data  = json_decode(file_get_contents('php://input'), true) ?: [];
         $id    = (int)($data['id'] ?? 0);
         $name  = trim($data['name'] ?? '');
-        $type  = trim($data['type'] ?? '药水');
+        $type  = trim($data['type'] ?? '食物');
         $image = trim($data['image'] ?? '');
         $tags  = json_encode($data['tags'] ?? [], JSON_UNESCAPED_UNICODE);
 
