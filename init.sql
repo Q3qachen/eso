@@ -22,3 +22,15 @@ INSERT IGNORE INTO `potion_tags` (`name`) VALUES
   ('血上限'), ('耐上限'), ('魔上限'),
   ('血回复'), ('耐回复'), ('魔回复');
 
+CREATE TABLE IF NOT EXISTS `equipment_items` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name`       VARCHAR(255) NOT NULL,
+  `role`       VARCHAR(20)  NOT NULL DEFAULT '输出',
+  `image`      MEDIUMTEXT,
+  `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 已建表后如需追加字段，执行：
+-- ALTER TABLE `equipment_items` ADD COLUMN `role` VARCHAR(20) NOT NULL DEFAULT '输出' AFTER `name`;
+

@@ -8,10 +8,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['image'])) {
     exit;
 }
 
-$dir = __DIR__ . '/img/potions/';
+$type    = isset($_POST['type']) ? $_POST['type'] : 'potion';
+$subDir  = ($type === 'equipment') ? 'equipment' : 'potions';
+$prefix  = ($type === 'equipment') ? 'equip_' : 'potion_';
+
+$dir = __DIR__ . '/img/' . $subDir . '/';
 if (!is_dir($dir)) {
     if (!@mkdir($dir, 0777, true) && !is_dir($dir)) {
-        echo json_encode(array('error' => '目录创建失败，请在宝塔文件管理中手动建立 img/potions 文件夹并设置权限755'));
+        echo json_encode(array('error' => '目录创建失败，请在宝塔文件管理中手动建立 img/' . $subDir . ' 文件夹并设置权限755'));
         exit;
     }
 }
@@ -41,7 +45,7 @@ if (!$ext) {
     exit;
 }
 
-$filename = 'potion_' . uniqid('', true) . '.' . $ext;
+$filename = $prefix . uniqid('', true) . '.' . $ext;
 $dest     = $dir . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $dest)) {
@@ -49,4 +53,4 @@ if (!move_uploaded_file($file['tmp_name'], $dest)) {
     exit;
 }
 
-echo json_encode(array('path' => 'img/potions/' . $filename));
+echo json_encode(array('path' => 'img/' . $subDir . '/' . $filename));

@@ -454,3 +454,288 @@
         renderPotions();
     });
 })();
+
+/* ===== 装备合集 ===== */
+(function () {
+
+    var state = { items: [] };
+
+    var ROLE_CLASS = { '输出': 'role-dps', '坦克': 'role-tank', '奶妈': 'role-heal' };
+    var ROLE_LABEL = { '输出': '⚔ 输出', '坦克': '🛡 坦克', '奶妈': '✚ 奶妈' };
+
+    function esc(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function apiGet(action) {
+        return fetch('api.php?action=' + action).then(function (r) { return r.json(); });
+    }
+    function apiPost(action, data) {
+        return fetch('api.php?action=' + action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(function (r) { return r.json(); });
+    }
+
+    function loadAll(callback) {
+        apiGet('get_equipment').then(function (data) {
+            state.items = data.items || [];
+            if (callback) callback();
+        }).catch(function () {
+            console.error('装备数据加载失败');
+        });
+    }
+
+    // ---------- 搜索 & 职业筛选状态 ----------
+    var searchQuery  = '';
+    var activeRole   = '';
+
+    function getFiltered() {
+        var items = state.items.slice();
+        if (activeRole) {
+            items = items.filter(function (i) { return (i.role || '输出') === activeRole; });
+        }
+        if (searchQuery) {
+            var q = searchQuery.toLowerCase();
+            items = items.filter(function (i) { return i.name.toLowerCase().indexOf(q) >= 0; });
+        }
+        return items;
+    }
+
+    var searchInput = document.getElementById('equipSearch');
+    if (searchInput) searchInput.addEventListener('input', function () {
+        searchQuery = searchInput.value.trim();
+        renderEquip();
+    });
+
+    // 职业 Tab 点击
+    var roleTabs = document.getElementById('equipRoleTabs');
+    if (roleTabs) {
+        roleTabs.addEventListener('click', function (e) {
+            var btn = e.target.closest('.equip-role-tab');
+            if (!btn) return;
+            activeRole = btn.getAttribute('data-role');
+            roleTabs.querySelectorAll('.equip-role-tab').forEach(function (t) {
+                t.classList.toggle('active', t === btn);
+            });
+            renderEquip();
+        });
+    }
+
+    // ---------- 渲染列表 ----------
+    function renderEquip() {
+        var grid = document.getElementById('equipGrid');
+        if (!grid) return;
+        var items = getFiltered();
+        if (!items.length) {
+            grid.innerHTML = '<p class="equip-empty">暂无匹配装备</p>';
+            return;
+        }
+
+        function cardHtml(item) {
+            var role       = item.role || '输出';
+            var roleClass  = ROLE_CLASS[role] || 'role-dps';
+            var roleLabel  = ROLE_LABEL[role] || role;
+            var imgHtml    = item.image
+                ? '<img src="' + esc(item.image) + '" alt="' + esc(item.name) + '">'
+                : '<span class="ec-noimg">无图片</span>';
+            return '<div class="equip-card">'
+                + '<div class="ec-img">'
+                +   imgHtml
+                +   '<span class="ec-role-badge ' + roleClass + '">' + roleLabel + '</span>'
+                + '</div>'
+                + '<div class="ec-body"><span class="ec-name">' + esc(item.name) + '</span></div>'
+                + '<button class="p-card-del" data-id="' + item.id + '" title="删除">×</button>'
+                + '</div>';
+        }
+
+        grid.innerHTML = items.map(cardHtml).join('');
+
+        grid.querySelectorAll('.p-card-del').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (!confirm('确定删除这件装备？')) return;
+                var id = parseInt(btn.getAttribute('data-id'), 10);
+                apiPost('delete_equipment', { id: id }).then(function () {
+                    loadAll(renderEquip);
+                });
+            });
+        });
+
+        // 点卡片打开编辑
+        grid.querySelectorAll('.equip-card').forEach(function (card) {
+            card.addEventListener('click', function (e) {
+                if (e.target.classList.contains('p-card-del')) return;
+                if (e.target.tagName === 'IMG' && e.target.closest('.ec-img')) return;
+                var id = parseInt(card.querySelector('.p-card-del').getAttribute('data-id'), 10);
+                var item = state.items.find(function (i) { return i.id === id; });
+                if (item) openModal(item);
+            });
+        });
+
+        // 图片点击放大（复用灯箱）
+        var lb    = document.getElementById('lightbox');
+        var lbImg = document.getElementById('lightboxImg');
+        grid.querySelectorAll('.ec-img img').forEach(function (img) {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (!lb || !lbImg) return;
+                lbImg.src = img.src;
+                lbImg.alt = img.alt || '';
+                lb.classList.add('open');
+                lb.setAttribute('aria-hidden', 'false');
+            });
+        });
+    }
+
+    // ---------- 弹窗 ----------
+    var modal      = document.getElementById('equipModal');
+    var imgInput   = document.getElementById('eImgInput');
+    var imgPreview = document.getElementById('eImgPreview');
+    var nameInput  = document.getElementById('eNameInput');
+    var roleSelect = document.getElementById('eRoleSelect');
+    var cancelBtn  = document.getElementById('eCancelBtn');
+    var closeBtn   = document.getElementById('eCloseBtn');
+    var saveBtn    = document.getElementById('eSaveBtn');
+    var addBtn     = document.getElementById('addEquipBtn');
+    var pendingImg = null;
+    var editingId  = null;
+
+    function getSelectedRole() {
+        if (!roleSelect) return '输出';
+        var active = roleSelect.querySelector('.equip-role-opt.active');
+        return active ? active.getAttribute('data-role') : '输出';
+    }
+
+    function setSelectedRole(role) {
+        if (!roleSelect) return;
+        roleSelect.querySelectorAll('.equip-role-opt').forEach(function (btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-role') === role);
+        });
+    }
+
+    if (roleSelect) {
+        roleSelect.addEventListener('click', function (e) {
+            var btn = e.target.closest('.equip-role-opt');
+            if (!btn) return;
+            roleSelect.querySelectorAll('.equip-role-opt').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+        });
+    }
+
+    function openModal(item) {
+        editingId  = item ? item.id : null;
+        pendingImg = item ? (item.image || null) : null;
+
+        var titleEl = modal ? modal.querySelector('.p-modal-head h4') : null;
+        if (titleEl) titleEl.textContent = item ? '编辑装备' : '添加装备';
+
+        if (imgPreview) {
+            imgPreview.innerHTML = pendingImg
+                ? '<img src="' + esc(pendingImg) + '" alt="预览">'
+                : '<span>点击选择 / Ctrl+V 粘贴</span>';
+        }
+        if (nameInput) nameInput.value = item ? item.name : '';
+        setSelectedRole(item ? (item.role || '输出') : '输出');
+        if (modal) { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+    }
+
+    function closeModal() {
+        if (modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+    }
+
+    function setPreviewImg(src) {
+        pendingImg = src;
+        if (imgPreview) imgPreview.innerHTML = '<img src="' + esc(src) + '" alt="预览">';
+    }
+
+    function fallbackBase64(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+                var MAX = 500, w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else        { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                setPreviewImg(canvas.toDataURL('image/jpeg', 0.82));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadImgFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        var fd = new FormData();
+        fd.append('image', file);
+        fd.append('type', 'equipment');
+        fetch('upload.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.path) {
+                    setPreviewImg(data.path + '?t=' + Date.now());
+                } else {
+                    alert('图片上传失败：' + (data.error || '未知错误') + '\n将使用本地预览。');
+                    fallbackBase64(file);
+                }
+            })
+            .catch(function () { fallbackBase64(file); });
+    }
+
+    if (imgInput) imgInput.addEventListener('change', function () {
+        loadImgFile(imgInput.files[0]);
+    });
+
+    // Ctrl+V 粘贴图片
+    document.addEventListener('paste', function (e) {
+        if (!modal || !modal.classList.contains('open')) return;
+        var items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type.startsWith('image/')) {
+                loadImgFile(items[i].getAsFile());
+                break;
+            }
+        }
+    });
+
+    if (addBtn) addBtn.addEventListener('click', function () {
+        var det = document.querySelector('#equipment details');
+        if (det) det.open = true;
+        openModal(null);
+    });
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (closeBtn)  closeBtn.addEventListener('click', closeModal);
+
+    if (saveBtn) saveBtn.addEventListener('click', function () {
+        var name = nameInput ? nameInput.value.trim() : '';
+        if (!name) { if (nameInput) nameInput.focus(); return; }
+
+        var imageToSave = pendingImg ? pendingImg.split('?')[0] : '';
+        if (editingId !== null && !imageToSave) {
+            var orig = state.items.find(function (i) { return i.id === editingId; });
+            if (orig) imageToSave = (orig.image || '').split('?')[0];
+        }
+
+        apiPost('save_equipment', { id: editingId || 0, name: name, role: getSelectedRole(), image: imageToSave })
+            .then(function (res) {
+                if (res.error) { alert('保存失败：' + res.error); return; }
+                searchQuery = '';
+                if (searchInput) searchInput.value = '';
+                var det = document.querySelector('#equipment details');
+                if (det) det.open = true;
+                loadAll(renderEquip);
+                closeModal();
+            });
+    });
+
+    // ---------- 初始加载 ----------
+    loadAll(renderEquip);
+})();

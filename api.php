@@ -101,6 +101,53 @@ switch ($action) {
         echo json_encode(['success' => true]);
         break;
 
+    // ── 读取所有装备 ──────────────────────────────────────────
+    case 'get_equipment':
+        $items = [];
+        foreach ($pdo->query('SELECT id, name, role, image FROM equipment_items ORDER BY id ASC') as $row) {
+            $row['id'] = (int)$row['id'];
+            $items[]   = $row;
+        }
+        echo json_encode(['items' => $items], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ── 新建 / 编辑装备 ───────────────────────────────────────
+    case 'save_equipment':
+        $data  = json_decode(file_get_contents('php://input'), true) ?: [];
+        $id    = (int)($data['id'] ?? 0);
+        $name  = trim($data['name'] ?? '');
+        $role  = in_array($data['role'] ?? '', ['输出', '坦克', '奶妈']) ? $data['role'] : '输出';
+        $image = trim($data['image'] ?? '');
+
+        if ($name === '') {
+            echo json_encode(['error' => '名称不能为空']);
+            break;
+        }
+
+        if ($id > 0) {
+            $stmt = $pdo->prepare('UPDATE equipment_items SET name=?, role=?, image=? WHERE id=?');
+            $stmt->execute([$name, $role, $image, $id]);
+            echo json_encode(['success' => true, 'id' => $id], JSON_UNESCAPED_UNICODE);
+        } else {
+            $stmt = $pdo->prepare('INSERT INTO equipment_items (name, role, image) VALUES (?, ?, ?)');
+            $stmt->execute([$name, $role, $image]);
+            echo json_encode(['success' => true, 'id' => (int)$pdo->lastInsertId()], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // ── 删除装备 ──────────────────────────────────────────────
+    case 'delete_equipment':
+        $data = json_decode(file_get_contents('php://input'), true) ?: [];
+        $id   = (int)($data['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $pdo->prepare('DELETE FROM equipment_items WHERE id=?');
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => '无效ID']);
+        }
+        break;
+
     default:
         echo json_encode(['error' => '未知操作']);
 }
