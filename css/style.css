@@ -595,6 +595,147 @@ details[open] .collapse-arrow {
 }
 .p-btn-ghost:hover { border-color: var(--gold); color: var(--gold-2); }
 
+/* ========== 冒险笔记 ========== */
+.tips-bar { margin-bottom: 14px; }
+
+.tips-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.tip-filter-chip {
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: none;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .2s;
+}
+.tip-filter-chip:hover { border-color: var(--gold); color: var(--gold-2); }
+.tip-filter-chip.active {
+    font-weight: 700;
+    box-shadow: 0 0 0 2px currentColor;
+    transform: scale(1.05);
+}
+
+.tips-search { margin-bottom: 18px; }
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.tips-empty {
+    grid-column: 1 / -1;
+    color: var(--text-mute);
+    font-size: 14px;
+    text-align: center;
+    padding: 40px 0;
+}
+
+/* 笔记卡片 */
+.tip-card {
+    position: relative;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-left-width: 4px;
+    border-radius: 10px;
+    padding: 14px 16px 14px 18px;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.tip-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,.3);
+}
+
+.tip-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    align-self: flex-start;
+    border: 1px solid transparent;
+}
+
+.tip-content {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* 各分类配色 */
+.tip-card[data-cat="游戏机制"] { border-left-color: var(--gold); }
+.tip-card[data-cat="游戏机制"] .tip-cat-badge { background: rgba(212,168,87,.15); border-color: rgba(212,168,87,.4); color: var(--gold-2); }
+
+.tip-card[data-cat="副职业"]   { border-left-color: #5ab4e8; }
+.tip-card[data-cat="副职业"] .tip-cat-badge   { background: rgba(90,180,232,.15); border-color: rgba(90,180,232,.4); color: #7acff5; }
+
+.tip-card[data-cat="日常任务"] { border-left-color: #6abf86; }
+.tip-card[data-cat="日常任务"] .tip-cat-badge { background: rgba(80,185,110,.15); border-color: rgba(80,185,110,.4); color: #7ad49a; }
+
+.tip-card[data-cat="构筑技巧"] { border-left-color: #c87be0; }
+.tip-card[data-cat="构筑技巧"] .tip-cat-badge { background: rgba(180,100,220,.15); border-color: rgba(180,100,220,.4); color: #d9a0f0; }
+
+.tip-card[data-cat="探索"]     { border-left-color: #e8a846; }
+.tip-card[data-cat="探索"] .tip-cat-badge     { background: rgba(232,168,70,.15); border-color: rgba(232,168,70,.4); color: #f5c870; }
+
+.tip-card[data-cat="其他"]     { border-left-color: var(--line); }
+.tip-card[data-cat="其他"] .tip-cat-badge     { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.15); color: var(--text-mute); }
+
+/* 筛选 chip 配色继承卡片色 */
+.tip-filter-chip[data-cat="游戏机制"] { color: var(--gold-2);  border-color: rgba(212,168,87,.4); }
+.tip-filter-chip[data-cat="游戏机制"].active { background: rgba(212,168,87,.15); }
+.tip-filter-chip[data-cat="副职业"]   { color: #7acff5;        border-color: rgba(90,180,232,.4); }
+.tip-filter-chip[data-cat="副职业"].active   { background: rgba(90,180,232,.15); }
+.tip-filter-chip[data-cat="日常任务"] { color: #7ad49a;        border-color: rgba(80,185,110,.4); }
+.tip-filter-chip[data-cat="日常任务"].active { background: rgba(80,185,110,.15); }
+.tip-filter-chip[data-cat="构筑技巧"] { color: #d9a0f0;        border-color: rgba(180,100,220,.4); }
+.tip-filter-chip[data-cat="构筑技巧"].active { background: rgba(180,100,220,.15); }
+.tip-filter-chip[data-cat="探索"]     { color: #f5c870;        border-color: rgba(232,168,70,.4); }
+.tip-filter-chip[data-cat="探索"].active     { background: rgba(232,168,70,.15); }
+.tip-filter-chip[data-cat="其他"]     { color: var(--text-mute); border-color: var(--line); }
+.tip-filter-chip[data-cat="其他"].active     { background: rgba(255,255,255,.06); }
+
+/* 弹窗内分类选择 */
+.tip-cat-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tip-cat-opt {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .2s;
+}
+.tip-cat-opt:hover { border-color: var(--gold); color: var(--gold-2); }
+.tip-cat-opt.active { border-color: var(--gold); background: var(--gold-soft); color: var(--gold-2); font-weight: 700; }
+
+/* textarea */
+.tip-textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.65;
+}
+
 /* ========== 装备模块 ========== */
 .equip-bar { margin-bottom: 14px; }
 
@@ -829,6 +970,7 @@ details[open] .collapse-arrow {
     .section-head h3 { font-size: 18px; }
     .potions-list { grid-template-columns: repeat(2, 1fr); }
     .equip-list   { grid-template-columns: repeat(2, 1fr); }
+    .tips-grid    { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 400px) {

@@ -148,6 +148,53 @@ switch ($action) {
         }
         break;
 
+    // ── 读取所有笔记 ──────────────────────────────────────────
+    case 'get_tips':
+        $items = [];
+        foreach ($pdo->query('SELECT id, category, content FROM tip_items ORDER BY id DESC') as $row) {
+            $row['id'] = (int)$row['id'];
+            $items[]   = $row;
+        }
+        echo json_encode(['items' => $items], JSON_UNESCAPED_UNICODE);
+        break;
+
+    // ── 新建 / 编辑笔记 ───────────────────────────────────────
+    case 'save_tip':
+        $data     = json_decode(file_get_contents('php://input'), true) ?: [];
+        $id       = (int)($data['id'] ?? 0);
+        $category = trim($data['category'] ?? '其他');
+        $content  = trim($data['content']  ?? '');
+
+        if ($category === '') $category = '其他';
+        if ($content === '') {
+            echo json_encode(['error' => '内容不能为空']);
+            break;
+        }
+
+        if ($id > 0) {
+            $stmt = $pdo->prepare('UPDATE tip_items SET category=?, content=? WHERE id=?');
+            $stmt->execute([$category, $content, $id]);
+            echo json_encode(['success' => true, 'id' => $id], JSON_UNESCAPED_UNICODE);
+        } else {
+            $stmt = $pdo->prepare('INSERT INTO tip_items (category, content) VALUES (?, ?)');
+            $stmt->execute([$category, $content]);
+            echo json_encode(['success' => true, 'id' => (int)$pdo->lastInsertId()], JSON_UNESCAPED_UNICODE);
+        }
+        break;
+
+    // ── 删除笔记 ──────────────────────────────────────────────
+    case 'delete_tip':
+        $data = json_decode(file_get_contents('php://input'), true) ?: [];
+        $id   = (int)($data['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $pdo->prepare('DELETE FROM tip_items WHERE id=?');
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => '无效ID']);
+        }
+        break;
+
     // ── 读取所有构筑 ──────────────────────────────────────────
     case 'get_builds':
         $items = [];

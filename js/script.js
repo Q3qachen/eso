@@ -455,6 +455,195 @@
     });
 })();
 
+/* ===== 冒险笔记 ===== */
+(function () {
+
+    var CATS = ['游戏机制', '副职业', '日常任务', '构筑技巧', '探索', '其他'];
+    var CAT_ICON = { '游戏机制': '⚙', '副职业': '🔧', '日常任务': '📋', '构筑技巧': '⚔', '探索': '🗺', '其他': '📝' };
+
+    var state = { items: [] };
+
+    function esc(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function apiGet(action) {
+        return fetch('api.php?action=' + action).then(function (r) { return r.json(); });
+    }
+    function apiPost(action, data) {
+        return fetch('api.php?action=' + action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(function (r) { return r.json(); });
+    }
+    function loadAll(callback) {
+        apiGet('get_tips').then(function (data) {
+            state.items = data.items || [];
+            if (callback) callback();
+        }).catch(function () { console.error('笔记数据加载失败'); });
+    }
+
+    // ---------- 搜索 & 分类过滤 ----------
+    var searchQuery = '';
+    var activeCat   = '';
+
+    function getFiltered() {
+        var items = state.items.slice();
+        if (activeCat) items = items.filter(function (i) { return i.category === activeCat; });
+        if (searchQuery) {
+            var q = searchQuery.toLowerCase();
+            items = items.filter(function (i) { return i.content.toLowerCase().indexOf(q) >= 0; });
+        }
+        return items;
+    }
+
+    // 动态渲染分类筛选条（只显示数据库里实际有的分类）
+    function renderFilterBar() {
+        var bar = document.getElementById('tipCatFilter');
+        if (!bar) return;
+        // 统计每个分类的数量
+        var counts = {};
+        state.items.forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
+        var present = CATS.filter(function (c) { return counts[c]; });
+
+        var html = '<button class="tip-filter-chip' + (!activeCat ? ' active' : '') + '" data-cat="">全部 <em>' + state.items.length + '</em></button>';
+        present.forEach(function (cat) {
+            var icon = CAT_ICON[cat] || '';
+            html += '<button class="tip-filter-chip' + (activeCat === cat ? ' active' : '') + '" data-cat="' + esc(cat) + '">'
+                + icon + ' ' + esc(cat) + ' <em>' + counts[cat] + '</em></button>';
+        });
+        bar.innerHTML = html;
+
+        bar.querySelectorAll('.tip-filter-chip').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                activeCat = btn.getAttribute('data-cat');
+                renderFilterBar();
+                renderTips();
+            });
+        });
+    }
+
+    var searchInput = document.getElementById('tipSearch');
+    if (searchInput) searchInput.addEventListener('input', function () {
+        searchQuery = searchInput.value.trim();
+        renderTips();
+    });
+
+    // ---------- 渲染笔记列表 ----------
+    function renderTips() {
+        var grid = document.getElementById('tipsGrid');
+        if (!grid) return;
+        var items = getFiltered();
+        if (!items.length) {
+            grid.innerHTML = '<p class="tips-empty">暂无匹配笔记</p>';
+            return;
+        }
+
+        function cardHtml(item) {
+            var cat  = item.category || '其他';
+            var icon = CAT_ICON[cat] || '📝';
+            return '<div class="tip-card" data-cat="' + esc(cat) + '" data-id="' + item.id + '">'
+                + '<span class="tip-cat-badge">' + icon + ' ' + esc(cat) + '</span>'
+                + '<p class="tip-content">' + esc(item.content) + '</p>'
+                + '<button class="p-card-del" data-id="' + item.id + '" title="删除">×</button>'
+                + '</div>';
+        }
+
+        grid.innerHTML = items.map(cardHtml).join('');
+
+        grid.querySelectorAll('.p-card-del').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (!confirm('确定删除这条笔记？')) return;
+                var id = parseInt(btn.getAttribute('data-id'), 10);
+                apiPost('delete_tip', { id: id }).then(function () {
+                    loadAll(function () { renderFilterBar(); renderTips(); });
+                });
+            });
+        });
+
+        // 点卡片编辑
+        grid.querySelectorAll('.tip-card').forEach(function (card) {
+            card.addEventListener('click', function (e) {
+                if (e.target.classList.contains('p-card-del')) return;
+                var id = parseInt(card.getAttribute('data-id'), 10);
+                var item = state.items.find(function (i) { return i.id === id; });
+                if (item) openModal(item);
+            });
+        });
+    }
+
+    // ---------- 弹窗 ----------
+    var modal       = document.getElementById('tipModal');
+    var catSelect   = document.getElementById('tipCatSelect');
+    var contentInput= document.getElementById('tipContentInput');
+    var cancelBtn   = document.getElementById('tipCancelBtn');
+    var closeBtn    = document.getElementById('tipCloseBtn');
+    var saveBtn     = document.getElementById('tipSaveBtn');
+    var addBtn      = document.getElementById('addTipBtn');
+    var editingId   = null;
+
+    function getSelectedCat() {
+        if (!catSelect) return '其他';
+        var active = catSelect.querySelector('.tip-cat-opt.active');
+        return active ? active.getAttribute('data-cat') : '其他';
+    }
+    function setSelectedCat(cat) {
+        if (!catSelect) return;
+        catSelect.querySelectorAll('.tip-cat-opt').forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-cat') === cat);
+        });
+    }
+    if (catSelect) {
+        catSelect.addEventListener('click', function (e) {
+            var btn = e.target.closest('.tip-cat-opt');
+            if (!btn) return;
+            catSelect.querySelectorAll('.tip-cat-opt').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+        });
+    }
+
+    function openModal(item) {
+        editingId = item ? item.id : null;
+        var titleEl = modal ? modal.querySelector('.p-modal-head h4') : null;
+        if (titleEl) titleEl.textContent = item ? '编辑笔记' : '添加笔记';
+        if (contentInput) contentInput.value = item ? item.content : '';
+        setSelectedCat(item ? (item.category || '其他') : '游戏机制');
+        if (modal) { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+        if (contentInput) setTimeout(function () { contentInput.focus(); }, 50);
+    }
+    function closeModal() {
+        if (modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+    }
+
+    if (addBtn) addBtn.addEventListener('click', function () {
+        var det = document.querySelector('#tips details');
+        if (det) det.open = true;
+        openModal(null);
+    });
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (closeBtn)  closeBtn.addEventListener('click', closeModal);
+
+    if (saveBtn) saveBtn.addEventListener('click', function () {
+        var content = contentInput ? contentInput.value.trim() : '';
+        if (!content) { if (contentInput) contentInput.focus(); return; }
+
+        apiPost('save_tip', { id: editingId || 0, category: getSelectedCat(), content: content })
+            .then(function (res) {
+                if (res.error) { alert('保存失败：' + res.error); return; }
+                searchQuery = '';
+                if (searchInput) searchInput.value = '';
+                var det = document.querySelector('#tips details');
+                if (det) det.open = true;
+                loadAll(function () { renderFilterBar(); renderTips(); });
+                closeModal();
+            });
+    });
+
+    // ---------- 初始加载 ----------
+    loadAll(function () { renderFilterBar(); renderTips(); });
+})();
+
 /* ===== 装备合集 ===== */
 (function () {
 

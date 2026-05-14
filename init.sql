@@ -34,6 +34,14 @@ CREATE TABLE IF NOT EXISTS `equipment_items` (
 -- 已建表后如需追加字段，执行：
 -- ALTER TABLE `equipment_items` ADD COLUMN `role` VARCHAR(20) NOT NULL DEFAULT '输出' AFTER `name`;
 
+CREATE TABLE IF NOT EXISTS `tip_items` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category`   VARCHAR(30)  NOT NULL DEFAULT '其他',
+  `content`    TEXT         NOT NULL,
+  `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `build_items` (
   `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name`       VARCHAR(255) NOT NULL,
