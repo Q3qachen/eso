@@ -22,8 +22,8 @@
         <nav class="nav" id="nav">
             <a href="#story">主线</a>
             <a href="#tips">笔记</a>
-            <a href="#builds">构筑</a>
             <a href="#equipment">装备</a>
+            <a href="#builds">构筑</a>
             <a href="#potions">食物</a>
         </nav>
         <button class="nav-toggle" id="navToggle" aria-label="切换菜单">☰</button>
@@ -97,36 +97,11 @@
             </details>
         </section>
 
-        <!-- ===== 装备构筑 ===== -->
-        <section id="builds" class="card section">
-            <details>
-                <summary class="section-head">
-                    <span class="section-num">03</span>
-                    <div>
-                        <h3>装备构筑</h3>
-                        <p>职业构筑方案记录</p>
-                    </div>
-                    <span class="collapse-arrow">▾</span>
-                </summary>
-                <div class="equip-bar">
-                    <button class="p-btn-primary" id="addBuildBtn">＋ 添加</button>
-                </div>
-                <input type="text" id="buildSearch" class="p-input equip-search" placeholder="🔍 搜索构筑名称…">
-                <div class="equip-role-tabs" id="buildRoleTabs">
-                    <button class="equip-role-tab active" data-role="">全部</button>
-                    <button class="equip-role-tab" data-role="输出">⚔ 输出</button>
-                    <button class="equip-role-tab" data-role="坦克">🛡 坦克</button>
-                    <button class="equip-role-tab" data-role="奶妈">✚ 奶妈</button>
-                </div>
-                <div class="equip-list" id="buildGrid"></div>
-            </details>
-        </section>
-
         <!-- ===== 装备合集 ===== -->
         <section id="equipment" class="card section">
             <details>
                 <summary class="section-head">
-                    <span class="section-num">04</span>
+                    <span class="section-num">03</span>
                     <div>
                         <h3>装备合集</h3>
                         <p>套装与散件记录</p>
@@ -144,6 +119,31 @@
                     <button class="equip-role-tab" data-role="奶妈">✚ 奶妈</button>
                 </div>
                 <div class="equip-list" id="equipGrid"></div>
+            </details>
+        </section>
+
+        <!-- ===== 装备构筑 ===== -->
+        <section id="builds" class="card section">
+            <details>
+                <summary class="section-head">
+                    <span class="section-num">04</span>
+                    <div>
+                        <h3>装备构筑</h3>
+                        <p>职业构筑方案记录</p>
+                    </div>
+                    <span class="collapse-arrow">▾</span>
+                </summary>
+                <div class="equip-bar">
+                    <button class="p-btn-primary" id="addBuildBtn">＋ 添加</button>
+                </div>
+                <input type="text" id="buildSearch" class="p-input equip-search" placeholder="🔍 搜索构筑名称…">
+                <div class="equip-role-tabs" id="buildRoleTabs">
+                    <button class="equip-role-tab active" data-role="">全部</button>
+                    <button class="equip-role-tab" data-role="输出">⚔ 输出</button>
+                    <button class="equip-role-tab" data-role="坦克">🛡 坦克</button>
+                    <button class="equip-role-tab" data-role="奶妈">✚ 奶妈</button>
+                </div>
+                <div class="equip-list" id="buildGrid"></div>
             </details>
         </section>
 
