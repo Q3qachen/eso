@@ -244,4 +244,6 @@ switch ($action) {
 
     default:
         echo json_encode(['error' => '未知操作']);
+        // 做存档
+
 }
