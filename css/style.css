@@ -675,7 +675,9 @@ details[open] .collapse-arrow { transform: rotate(180deg); color: var(--gold); }
     transition: opacity var(--t), background var(--t), color var(--t);
 }
 
-.food-card:hover .p-card-del { opacity: 1; }
+.food-card:hover .p-card-del,
+.tip-card:hover .p-card-del,
+.equip-card:hover .p-card-del { opacity: 1; }
 .p-card-del:hover { background: var(--red); color: #fff; }
 
 /* ========== MODAL ========== */
